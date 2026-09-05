@@ -228,20 +228,19 @@ function buildStagePanels(){
     </section>`;
   });
   wrap.innerHTML = html;
-
+  wireActivityAddButtons();
+  wireRemoveButtons();
+}
+function wireActivityAddButtons(){
   $$(".ac-add").forEach(btn=>{
     btn.onclick = () => {
       const activityId = btn.dataset.act, cityId = btn.dataset.city;
       if(getActivitiesAdded().some(a => a.activityId === activityId)) return;
       addActivityAdded({ activityId, cityId, title: btn.dataset.title });
-      btn.classList.add("added");
-      btn.textContent = "Ajoutée ✓";
-      const target = $("#added-"+cityId);
-      if(target) target.innerHTML = addedActivitiesHTML(cityId);
-      wireRemoveButtons();
+      buildStagePanels();
+      renderToday();
     };
   });
-  wireRemoveButtons();
 }
 function wireRemoveButtons(){
   $$("[data-remove-added]").forEach(btn=>{
@@ -557,22 +556,34 @@ function findActiveHotel(iso){
 }
 
 function hotelMiniCardHTML(hotel){
-  return `<div class="today-card">
-    <div class="tc-label">Hôtel ce soir</div>
-    <div class="tc-title">${hotel.name}</div>
-    <div class="tc-sub">${hotel.checkin} → ${hotel.checkout}</div>
-    ${addressRowsHTML(hotel)}
-    ${addressActionsHTML(hotel, `<button class="wc-btn" data-goto-hotel="${hotel.stageId}">Voir la réservation</button>`)}
+  return `<div class="wallet-card type-hotel">
+    <div class="wc-top">
+      <div class="wc-kanji">${hotel.kanji}</div>
+      <div class="wc-icon">Hôtel ce soir</div>
+      <div class="wc-title">${hotel.name}</div>
+      <div class="wc-subtitle">${hotel.checkin} → ${hotel.checkout}</div>
+    </div>
+    <div class="wc-tear"></div>
+    <div class="wc-body">
+      ${addressRowsHTML(hotel)}
+      ${addressActionsHTML(hotel, `<button class="wc-btn" data-goto-hotel="${hotel.stageId}">Voir la réservation</button>`)}
+    </div>
   </div>`;
 }
 function flightMiniCardHTML(f){
-  return `<div class="today-card">
-    <div class="tc-label">Vol aujourd'hui</div>
-    <div class="tc-title">${f.route}</div>
-    <div class="tc-sub">${f.segs.map(sg=>`${sg.code1} ${sg.t1} → ${sg.code2} ${sg.t2}`).join(' · ')}</div>
-    <div class="wc-actions" style="margin-top:14px;">
-      <button class="wc-btn" data-copy-text="${flightInfoText(f).replace(/"/g,'&quot;')}">Copier infos vol</button>
-      <button class="wc-btn" data-goto-flight="${f.id}">Voir la réservation</button>
+  return `<div class="wallet-card type-flight">
+    <div class="wc-top">
+      <div class="wc-kanji">${f.kanji}</div>
+      <div class="wc-icon">Vol aujourd'hui</div>
+      <div class="wc-title">${f.route}</div>
+      <div class="wc-subtitle">${f.segs.map(sg=>`${sg.code1} ${sg.t1} → ${sg.code2} ${sg.t2}`).join(' · ')}</div>
+    </div>
+    <div class="wc-tear"></div>
+    <div class="wc-body">
+      <div class="wc-actions">
+        <button class="wc-btn" data-copy-text="${flightInfoText(f).replace(/"/g,'&quot;')}">Copier infos vol</button>
+        <button class="wc-btn" data-goto-flight="${f.id}">Voir la réservation</button>
+      </div>
     </div>
   </div>`;
 }
@@ -616,12 +627,11 @@ function renderDayCards(iso, container){
     </div>`;
   }
 
-  const addedForCity = stage ? getActivitiesAdded().filter(a => a.cityId === stage.id) : [];
-  if(addedForCity.length){
-    html += `<div class="today-card">
-      <div class="tc-label">Activités ajoutées</div>
-      ${addedForCity.map(a=>`<div style="font-size:14px; padding:6px 0;">${a.title}</div>`).join('')}
-    </div>`;
+  const cityActivities = stage ? (ACTIVITIES[stage.id] || []) : [];
+  if(cityActivities.length){
+    html += `<div class="section-label">Idées d'activités — ${stage.name}</div>
+      ${cityActivities.map(a => activityCardHTML(a, stage.id)).join('')}
+      ${addedActivitiesHTML(stage.id)}`;
   }
 
   const checklist = getChecklist()[iso] || {};
@@ -642,6 +652,8 @@ function renderDayCards(iso, container){
   container.innerHTML = html;
 
   wireCopyButtons();
+  wireActivityAddButtons();
+  wireRemoveButtons();
   $$("[data-checklist-item]", container).forEach(cb=>{
     cb.onchange = () => {
       setChecklistItem(cb.dataset.checklistDate, cb.dataset.checklistItem, cb.checked);
