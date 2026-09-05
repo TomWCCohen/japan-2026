@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>日本 — 6→20 Sept 2026</title>
+<style>
+  :root{
+    --paper:#F6F5F1;
+    --paper-alt:#EDEBE3;
+    --ink:#1B1B18;
+    --ink-soft:#5B594F;
+    --indigo:#1F3A5C;
+    --indigo-deep:#152840;
+    --shu:#B14A2B;
+    --green:#3D6B4C;
+    --line:#D9D5C8;
+    --line-strong:#B9B4A4;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:64px;
+  }
+  h1,h2,h3,.serif{
+    font-family:"Iowan Old Style","Palatino Linotype",Georgia,"Hiragino Mincho ProN",serif;
+    font-weight:600;
+    letter-spacing:0.01em;
+  }
+  .lang-fr .en{display:none;}
+  .lang-en .fr{display:none;}
+
+  /* ===== Header ===== */
+  header{
+    padding:22px 18px 16px;
+    border-bottom:1px solid var(--line-strong);
+    position:relative;
+    overflow:hidden;
+    background:var(--indigo);
+    color:var(--paper);
+  }
+  header .kanji-bg{
+    position:absolute; right:-18px; top:-30px;
+    font-family:"Hiragino Mincho ProN","Yu Mincho",serif;
+    font-size:150px; color:rgba(246,245,241,0.08); line-height:1; pointer-events:none;
+  }
+  header .eyebrow{ font-size:12.5px; color:rgba(246,245,241,0.7); margin-bottom:6px; }
+  header h1{ font-size:26px; margin:0 0 4px; color:var(--paper); position:relative; }
+  header .dates{ font-size:14px; color:rgba(246,245,241,0.82); position:relative; }
+  .lang-toggle{
+    position:absolute; top:20px; right:16px;
+    display:flex; border:1px solid rgba(246,245,241,0.5); border-radius:2px; overflow:hidden; z-index:2;
+  }
+  .lang-toggle button{
+    background:transparent; border:none; color:rgba(246,245,241,0.75);
+    font-size:12px; letter-spacing:0.04em; padding:6px 10px; cursor:pointer; font-family:inherit;
+  }
+  .lang-fr .lang-toggle .set-fr, .lang-en .lang-toggle .set-en{
+    background:rgba(246,245,241,0.16); color:var(--paper);
+  }
+
+  /* ===== Nav pills ===== */
+  nav.stages{
+    position:sticky; top:0; z-index:10;
+    display:flex; overflow-x:auto; background:var(--paper);
+    border-bottom:1px solid var(--line-strong);
+    -webkit-overflow-scrolling:touch; scrollbar-width:none;
+  }
+  nav.stages::-webkit-scrollbar{display:none;}
+  nav.stages button{
+    flex:0 0 auto; background:none; border:none; border-right:1px solid var(--line);
+    padding:12px 14px; font-family:inherit; font-size:13px; color:var(--ink-soft);
+    cursor:pointer; white-space:nowrap; position:relative;
+  }
+  nav.stages button .kj{
+    display:block; font-family:"Hiragino Mincho ProN","Yu Mincho",serif;
+    font-size:11px; color:var(--line-strong); margin-bottom:2px;
+  }
+  nav.stages button.active{ color:var(--indigo); font-weight:600; }
+  nav.stages button.active::after{
+    content:""; position:absolute; left:0; right:0; bottom:-1px; height:2px; background:var(--indigo);
+  }
+
+  /* ===== Panels ===== */
+  .panel{display:none; padding:20px 18px 8px;}
+  .panel.active{display:block;}
+
+  .stage-head{ position:relative; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--line); }
+  .stage-head .kanji-huge{
+    position:absolute; right:-6px; top:-10px;
+    font-family:"Hiragino Mincho ProN","Yu Mincho",serif; font-size:78px; color:var(--paper-alt); z-index:0; line-height:1;
+  }
+  .stage-head h2{ font-size:22px; margin:0 0 4px; position:relative; z-index:1; }
+  .stage-head .range{ font-size:13px; color:var(--ink-soft); position:relative; z-index:1; }
+  .vibe{
+    font-size:14.5px; margin:12px 0 20px; font-style:italic;
+    border-left:2px solid var(--indigo); padding-left:12px;
+  }
+
+  .section-label{
+    font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-soft); margin:26px 0 10px;
+  }
+  .section-label:first-of-type{margin-top:0;}
+
+  .day{ display:flex; gap:12px; padding:10px 0; border-top:1px solid var(--line); }
+  .day:first-of-type{border-top:none;}
+  .day .d-date{ flex:0 0 78px; font-size:12px; color:var(--indigo); font-weight:600; padding-top:2px; }
+  .day .d-body{flex:1; font-size:14px;}
+  .day .d-body b{font-weight:600;}
+  .day .d-flag{
+    display:inline-block; margin-top:6px; font-size:12px; color:var(--shu);
+    border:1px solid var(--shu); border-radius:2px; padding:2px 6px;
+  }
+
+  .info-row{ display:flex; justify-content:space-between; gap:14px; padding:9px 0; border-top:1px solid var(--line); font-size:14px; }
+  .info-row:first-of-type{border-top:none;}
+  .info-row .k{color:var(--ink-soft); flex:0 0 40%;}
+  .info-row .v{flex:1; text-align:right;}
+
+  .names-list{font-size:14px; margin:0; padding-left:0; list-style:none;}
+  .names-list li{ padding:7px 0; border-top:1px solid var(--line); }
+  .names-list li:first-of-type{border-top:none;}
+  .names-list li .jp{ color:var(--ink-soft); font-size:12.5px; margin-left:6px; }
+
+  /* route map */
+  .route-map{ padding:6px 4px 4px 4px; margin-bottom:4px; }
+  .route-node{ display:flex; align-items:center; gap:14px; padding:9px 0; }
+  .route-node .line-wrap{ flex:0 0 20px; display:flex; flex-direction:column; align-items:center; align-self:stretch; }
+  .route-node .dot{ width:11px; height:11px; border-radius:50%; background:var(--indigo); border:2px solid var(--indigo); flex:0 0 auto; }
+  .route-node .stem{ width:1px; flex:1; background:var(--line-strong); }
+  .route-node .rn-body{flex:1; padding-bottom:2px;}
+  .route-node .rn-name{font-size:15px; font-weight:600;}
+  .route-node .rn-kj{ font-family:"Hiragino Mincho ProN","Yu Mincho",serif; font-size:12px; color:var(--ink-soft); margin-left:6px; }
+  .route-node .rn-dates{font-size:12.5px; color:var(--ink-soft);}
+  .transport-row{ display:flex; align-items:center; gap:14px; padding:2px 0; }
+  .transport-row .line-wrap{ flex:0 0 20px; display:flex; justify-content:center; align-self:stretch; }
+  .transport-row .line-wrap .stem{width:1px; flex:1; background:var(--line-strong);}
+  .transport-row .t-label{ font-size:12px; color:var(--indigo); padding:3px 0; }
+  .transport-row .t-label .arrow{color:var(--line-strong); margin-right:4px;}
+
+  .hero-note{ font-size:13.5px; color:var(--ink-soft); margin:6px 0 22px; }
+  footer{ text-align:center; font-size:11.5px; color:var(--ink-soft); padding:18px; }
+
+  /* ===== Day-by-day ===== */
+  .dbd-entry{ display:flex; gap:12px; padding:12px 0; border-top:1px solid var(--line); }
+  .dbd-entry:first-of-type{border-top:none;}
+  .dbd-entry .dbd-date{ flex:0 0 78px; font-size:12px; color:var(--indigo); font-weight:600; padding-top:2px; }
+  .dbd-entry .dbd-body{flex:1; font-size:14px;}
+  .dbd-entry .dbd-city{
+    font-family:"Iowan Old Style","Palatino Linotype",Georgia,serif; font-size:15px; font-weight:600; margin-bottom:3px;
+  }
+  .dbd-entry .dbd-city .jp{
+    font-family:"Hiragino Mincho ProN","Yu Mincho",serif; font-size:12px; color:var(--ink-soft); font-weight:400; margin-left:6px;
+  }
+  .dbd-entry .d-flag{
+    display:inline-block; margin-top:6px; font-size:12px; color:var(--shu);
+    border:1px solid var(--shu); border-radius:2px; padding:2px 6px;
+  }
+  .weather-summary{ margin-top:9px; background:var(--paper-alt); border:1px solid var(--line); padding:8px 10px; font-size:12.5px; }
+  .weather-summary .w-temp{font-weight:600; color:var(--indigo);}
+  .weather-confidence{ display:inline-block; margin-top:4px; font-size:10.5px; color:var(--shu); }
+  .weather-unavailable{ margin-top:9px; font-size:12.5px; color:var(--ink-soft); font-style:italic; }
+
+  /* ===== Bookings (wallet cards) ===== */
+  .filter-row{ display:flex; gap:8px; margin-bottom:18px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .filter-btn{
+    flex:0 0 auto; font-family:inherit; font-size:13px; padding:8px 14px; border-radius:20px;
+    border:1px solid var(--line-strong); background:var(--paper); color:var(--ink-soft); cursor:pointer;
+  }
+  .filter-btn.active{ background:var(--indigo); border-color:var(--indigo); color:var(--paper); font-weight:600; }
+
+  .wallet-card{
+    background:var(--paper); border:1px solid var(--line-strong); border-radius:14px;
+    margin-bottom:16px; overflow:hidden; box-shadow:0 1px 3px rgba(27,27,24,0.08);
+  }
+  .wallet-card .wc-top{
+    background:var(--indigo); color:var(--paper); padding:14px 16px 12px; position:relative; overflow:hidden;
+  }
+  .wallet-card.type-flight .wc-top{ background:var(--indigo-deep); }
+  .wallet-card.type-train .wc-top{ background:var(--green); }
+  .wallet-card .wc-top .wc-kanji{
+    position:absolute; right:-4px; top:-14px; font-family:"Hiragino Mincho ProN","Yu Mincho",serif;
+    font-size:64px; color:rgba(246,245,241,0.12); line-height:1;
+  }
+  .wallet-card .wc-icon{ font-size:13px; opacity:0.85; margin-bottom:2px; letter-spacing:0.04em; text-transform:uppercase; }
+  .wallet-card .wc-title{ font-family:"Iowan Old Style","Palatino Linotype",Georgia,serif; font-size:19px; font-weight:600; position:relative; z-index:1; }
+  .wallet-card .wc-subtitle{ font-size:13px; color:rgba(246,245,241,0.82); margin-top:2px; position:relative; z-index:1; }
+  .wallet-card .wc-route{ display:flex; align-items:center; gap:10px; margin-top:10px; position:relative; z-index:1; }
+  .wallet-card .wc-route .rp{ text-align:center; }
+  .wallet-card .wc-route .rp .code{ font-size:22px; font-weight:700; font-family:"Iowan Old Style",Georgia,serif; }
+  .wallet-card .wc-route .rp .time{ font-size:12px; color:rgba(246,245,241,0.82); }
+  .wallet-card .wc-route .arrow{ flex:1; text-align:center; color:rgba(246,245,241,0.5); font-size:13px; }
+  .wallet-card .wc-perf{
+    height:0; border-top:1.5px dashed var(--line-strong); margin:0 16px; position:relative;
+  }
+  .wallet-card .wc-perf::before, .wallet-card .wc-perf::after{
+    content:""; position:absolute; top:-8px; width:16px; height:16px; border-radius:50%; background:var(--paper);
+  }
+  .wallet-card .wc-perf::before{ left:-24px; }
+  .wallet-card .wc-perf::after{ right:-24px; }
+  .wallet-card .wc-body{ padding:14px 16px 16px; }
+  .wc-row{ display:flex; justify-content:space-between; gap:10px; padding:6px 0; font-size:13.5px; border-top:1px solid var(--line); }
+  .wc-row:first-of-type{ border-top:none; }
+  .wc-row .k{ color:var(--ink-soft); flex:0 0 42%; }
+  .wc-row .v{ flex:1; text-align:right; }
+  .wc-row a{ color:var(--indigo); text-decoration:none; }
+  .wc-note{
+    margin-top:10px; font-size:12px; color:var(--ink-soft); background:var(--paper-alt);
+    padding:8px 10px; border-radius:6px;
+  }
+  .wc-note.warn{ color:var(--shu); background:#F5E9E4; }
+  .wc-empty{ text-align:center; padding:40px 20px; color:var(--ink-soft); font-size:14px; }
+
+  /* ===== Budget ===== */
+  .budget-hero{ text-align:center; padding:10px 0 24px; }
+  .budget-hero .amount{ font-family:"Iowan Old Style",Georgia,serif; font-size:36px; color:var(--indigo); }
+  .budget-hero .amount .of{ font-size:18px; color:var(--ink-soft); font-family:inherit; }
+  .budget-hero .pct{ font-size:13px; color:var(--ink-soft); margin-top:4px; }
+  .gauge{ height:14px; background:var(--paper-alt); border-radius:8px; overflow:hidden; border:1px solid var(--line); margin:14px 0 6px; }
+  .gauge .fill{ height:100%; background:var(--indigo); border-radius:8px 0 0 8px; }
+  .gauge-labels{ display:flex; justify-content:space-between; font-size:11.5px; color:var(--ink-soft); }
+  .budget-row{ display:flex; align-items:center; gap:12px; padding:12px 0; border-top:1px solid var(--line); }
+  .budget-row:first-of-type{ border-top:none; }
+  .budget-row .b-label{ flex:0 0 34%; font-size:13.5px; }
+  .budget-row .b-bar{ flex:1; height:9px; background:var(--paper-alt); border-radius:5px; overflow:hidden; }
+  .budget-row .b-bar .b-fill{ height:100%; background:var(--indigo); }
+  .budget-row .b-amt{ flex:0 0 auto; font-size:13px; color:var(--ink-soft); min-width:64px; text-align:right; }
+  .budget-note{ font-size:12.5px; color:var(--ink-soft); margin-top:18px; background:var(--paper-alt); padding:10px 12px; border-radius:8px; }
+</style>
+</head>
+<body class="lang-fr">
+
+<header>
+  <div class="kanji-bg">旅</div>
+  <div class="lang-toggle">
+    <button class="set-fr" onclick="setLang('fr')">FR</button>
+    <button class="set-en" onclick="setLang('en')">EN</button>
+  </div>
+  <div class="eyebrow fr">VOYAGE — SÉOUL ⇄ JAPON</div>
+  <div class="eyebrow en">TRIP — SEOUL ⇄ JAPAN</div>
+  <h1>日本 2026</h1>
+  <div class="dates fr">6 → 20 septembre · Hokkaido → Osaka → Kyoto → Shirahama → Tokyo</div>
+  <div class="dates en">Sept 6 → 20 · Hokkaido → Osaka → Kyoto → Shirahama → Tokyo</div>
+</header>
+
+<nav class="stages" id="stageNav"></nav>
+
+<!-- ================= OVERVIEW ================= -->
+<section class="panel active" id="panel-overview">
+  <div class="section-label fr">Vue d'ensemble</div>
+  <div class="section-label en">Overview</div>
+  <p class="hero-note fr">Sapporo → Asahikawa (Biei + Asahidake) → Osaka → Kyoto → Shirahama → Tokyo. Le tronçon Alpes initial a été remplacé par Hokkaido pour la météo.</p>
+  <p class="hero-note en">Sapporo → Asahikawa (Biei + Asahidake) → Osaka → Kyoto → Shirahama → Tokyo. The original Alps leg was swapped for Hokkaido due to weather.</p>
+
+  <div class="route-map" id="routeMap"></div>
+
+  <div class="section-label fr">Tout est réservé</div>
+  <div class="section-label en">Everything is booked</div>
+  <p class="hero-note fr" style="margin-bottom:8px;">6 hôtels, 5 vols. Détails dans l'onglet <b>Réservations</b>. Suivi des dépenses dans <b>Budget</b>.</p>
+  <p class="hero-note en" style="margin-bottom:8px;">6 hotels, 5 flights. Full details under <b>Bookings</b>. Spending tracked under <b>Budget</b>.</p>
+</section>
+
+<!-- ================= BOOKINGS ================= -->
+<section class="panel" id="panel-bookings">
+  <div class="section-label fr">Réservations</div>
+  <div class="section-label en">Bookings</div>
+  <div class="filter-row" id="filterRow"></div>
+  <div id="bookingsList"></div>
+</section>
+
+<!-- ================= BUDGET ================= -->
+<section class="panel" id="panel-budget">
+  <div class="section-label fr">Budget</div>
+  <div class="section-label en">Budget</div>
+  <div class="budget-hero">
+    <div class="amount">$2,005 <span class="of fr">sur $3,000</span><span class="of en">of $3,000</span></div>
+    <div class="pct fr">67% du budget engagé</div>
+    <div class="pct en">67% of budget committed</div>
+    <div class="gauge"><div class="fill" style="width:67%;"></div></div>
+    <div class="gauge-labels"><span>$0</span><span class="fr">Objectif $3,000</span><span class="en">Target $3,000</span></div>
+  </div>
+
+  <div class="section-label fr">Répartition</div>
+  <div class="section-label en">Breakdown</div>
+  <div id="budgetBreakdown"></div>
+
+  <div class="budget-note fr">Objectif de $3,000 = logement + transport + repas + shopping courant. Montre vintage et appareil photo suivis séparément, hors de ce budget. Le vol Séoul→JFK est pris en charge par l'entreprise (non compté).</div>
+  <div class="budget-note en">The $3,000 target covers lodging + transport + meals + general shopping. Vintage watch and camera are tracked separately, outside this budget. The Seoul→JFK flight is company-paid (not counted).</div>
+</section>
+
+<!-- ================= DAY BY DAY ================= -->
+<section class="panel" id="panel-daybyday">
+  <div class="section-label fr">Programme jour par jour</div>
+  <div class="section-label en">Day-by-day schedule</div>
+  <p class="hero-note fr">Météo croisée (tenki.jp) au 4 septembre. Fiable à court terme, indicative au-delà de 10 jours, absente au-delà de 13 jours.</p>
+  <p class="hero-note en">Weather cross-checked (tenki.jp) as of Sept 4. Reliable short-term, indicative beyond 10 days, unavailable beyond 13 days.</p>
+  <div id="dbdList"></div>
+</section>
+
+<!-- panels injected by JS -->
+<div id="stagePanels"></div>
+
+<footer>
+  <span class="fr">Fonctionne hors-ligne · un seul fichier · aucune dépendance externe</span>
+  <span class="en">Works offline · single file · no external dependencies</span>
+</footer>
+
+<script>
+/* ============ STAGES (route + day-by-day + per-stage panels) ============ */
+const STAGES = [
+  {
+    id:"sapporo", kanji:"札幌", nameFr:"Sapporo", nameEn:"Sapporo",
+    rangeFr:"Dim 6 → Lun 7 sept · 1 nuit", rangeEn:"Sun Sept 6 → Mon 7 · 1 night",
+    transportFr:"Vol direct depuis Séoul (Jeju Air)", transportEn:"Direct flight from Seoul (Jeju Air)",
+    vibeFr:"Première soirée japonaise, sans ambition touristique. Centre-ville à pied.",
+    vibeEn:"First evening in Japan, no rigid checklist. Downtown on foot.",
+    days:[
+      {dFr:"DIM 6 SEPT", dEn:"SUN SEP 6", bodyFr:"Vol Séoul → Sapporo (12h15→15h00). Immigration + train, installation vers 17h. Soirée à pied : <b>Odori Park</b> → Tanukikoji → Susukino. Dîner kosher-friendly à trouver sur place (végétarien/poisson identifiable plutôt que kasher strict).", bodyEn:"Flight Seoul → Sapporo (12:15→15:00). Immigration + train, settled in by ~5pm. Evening on foot: <b>Odori Park</b> → Tanukikoji → Susukino. Find a kosher-friendly dinner on the spot (vegetarian/identifiable fish rather than strictly kosher).", flagFr:null, flagEn:null,
+       weather:{descFr:"Ensoleillé, quelques passages nuageux", descEn:"Sunny with some cloud", tempFr:"28°C / 13°C", precip:"20%"}}
+    ],
+    hotelAreaFr:"Chuo-ku, autour de la gare", hotelAreaEn:"Chuo-ku, near the station",
+    names:[["Odori Park","大通公園"],["Tanukikoji","狸小路"],["Susukino","すすきの"]],
+  },
+  {
+    id:"asahikawa", kanji:"旭川", nameFr:"Asahikawa", nameEn:"Asahikawa",
+    rangeFr:"Lun 7 → Mer 9 sept · 2 nuits", rangeEn:"Mon Sept 7 → Wed 9 · 2 nights",
+    transportFr:"Train limited express depuis Sapporo (~1h25)", transportEn:"Limited express train from Sapporo (~1h25)",
+    vibeFr:"Base fixe pour deux excursions à la journée : la campagne de Biei, puis le grand jour montagne à Asahidake.",
+    vibeEn:"Fixed base for two day trips: the Biei countryside, then the big mountain day at Asahidake.",
+    days:[
+      {dFr:"LUN 7 SEPT", dEn:"MON SEP 7", bodyFr:"Départ tôt Sapporo → Asahikawa. Sac déposé à l'hôtel (2 nuits). Train vers <b>Biei</b> (~35-45 min), exploré à vélo électrique (pas de voiture) : Patchwork Road, routes agricoles, éventuellement Shikisai-no-Oka — sans chercher à tout cocher. Retour Asahikawa en fin d'après-midi, soirée autour de la gare/Sanroku.", bodyEn:"Early departure Sapporo → Asahikawa. Bags dropped at the hotel (2 nights). Train to <b>Biei</b> (~35-45 min), explored by e-bike (no car) — Patchwork Road, farm roads, possibly Shikisai-no-Oka, without trying to tick every spot. Back to Asahikawa in the late afternoon, evening near the station/Sanroku.", flagFr:null, flagEn:null,
+       weather:{descFr:"Ensoleillé puis nuageux", descEn:"Sunny then cloudy", tempFr:"25°C / 12°C", precip:"40%"}},
+      {dFr:"MAR 8 SEPT", dEn:"TUE SEP 8", bodyFr:"<b>Le grand jour : Asahidake.</b> Bus Asahikawa → Asahidake Onsen/Ropeway (~1h40-1h50). Ropeway jusqu'à ~1 600m, dans le paysage volcanique du Daisetsuzan. Rando décidée sur place selon conditions : boucle tranquille Sugatami (~1h30-2h) ou sommet ambitieux (2 291m, plusieurs heures de plus). Onsen avant le bus retour. Deuxième nuit à Asahikawa.", bodyEn:"<b>The big day: Asahidake.</b> Bus Asahikawa → Asahidake Onsen/Ropeway (~1h40-1h50). Ropeway up to ~1,600m into the Daisetsuzan volcanic landscape. Hike decided on-site based on conditions: the calm Sugatami loop (~1.5-2h) or the more ambitious summit (2,291m, several more hours). Onsen before the bus back. Second night in Asahikawa.", flagFr:"Décision rando sur place (visibilité/vent/terrain)", flagEn:"Hike length decided on-site (visibility/wind/terrain)",
+       weather:{descFr:"Ensoleillé, quelques nuages", descEn:"Sunny with some cloud", tempFr:"25°C / 15°C", precip:"40%"}},
+      {dFr:"MER 9 SEPT", dEn:"WED SEP 9", bodyFr:"Matin volontairement léger : petit-déjeuner, courte balade, bagages. Puis aéroport d'Asahikawa (AKJ) pour le vol vers Osaka via Haneda.", bodyEn:"Deliberately light morning: breakfast, short walk, packing. Then Asahikawa airport (AKJ) for the flight to Osaka via Haneda.", flagFr:"Départ hôtel ~11h pour le vol de 13h40", flagEn:"Leave the hotel ~11am for the 1:40pm flight",
+       weather:{descFr:"Nuageux puis ensoleillé", descEn:"Cloudy then sunny", tempFr:"21°C / 16°C", precip:"30%"}}
+    ],
+    hotelAreaFr:"Centre-ville, 1-jodori", hotelAreaEn:"Downtown, 1-jodori",
+    names:[["Biei — Patchwork Road","美瑛・パッチワークの路"],["Blue Pond (Shirogane)","青い池"],["Asahidake Ropeway","旭岳ロープウェイ"],["Daisetsuzan","大雪山"]],
+  },
+  {
+    id:"osaka", kanji:"大阪", nameFr:"Osaka", nameEn:"Osaka",
+    rangeFr:"Mer 9 → Jeu 10 sept · 1 nuit", rangeEn:"Wed Sept 9 → Thu 10 · 1 night",
+    transportFr:"Vol depuis Asahikawa via Haneda (JAL)", transportEn:"Flight from Asahikawa via Haneda (JAL)",
+    vibeFr:"Comble la nuit entre Hokkaido et Kyoto — Osaka de nuit, puis une vraie demi-journée le lendemain.",
+    vibeEn:"Fills the night between Hokkaido and Kyoto — Osaka by night, then a real half-day the next morning.",
+    days:[
+      {dFr:"MER 9 SEPT", dEn:"WED SEP 9", bodyFr:"Arrivée Osaka Itami 17h35, Namba vers 19h. Soirée : <b>Namba</b> → Dotonbori → Hozenji Yokocho → Shinsaibashi.", bodyEn:"Arrival Osaka Itami 5:35pm, Namba by ~7pm. Evening: <b>Namba</b> → Dotonbori → Hozenji Yokocho → Shinsaibashi.", flagFr:null, flagEn:null,
+       weather:{descFr:"Nuageux, averse possible", descEn:"Cloudy, possible shower", tempFr:"29°C / 25°C", precip:"90%"}},
+      {dFr:"JEU 10 SEPT", dEn:"THU SEP 10", bodyFr:"Quasi journée complète. Matin : Kuromon / Namba, éventuellement Osaka Castle. Après-midi : Shinsaibashi / Amerikamura, shopping. Pas de détour par Kobe. Train vers Kyoto en fin de journée (~30-60 min), arrivée visée 18h-19h.", bodyEn:"Near-full day. Morning: Kuromon / Namba, possibly Osaka Castle. Afternoon: Shinsaibashi / Amerikamura, shopping. No detour to Kobe. Train to Kyoto in the late afternoon (~30-60 min), aiming to arrive 6-7pm.", flagFr:null, flagEn:null,
+       weather:{descFr:"Nuageux, pluie par moments", descEn:"Cloudy, rain at times", tempFr:"27°C / 23°C", precip:"70%"}}
+    ],
+    hotelAreaFr:"Namba", hotelAreaEn:"Namba",
+    names:[["Dotonbori","道頓堀"],["Hozenji Yokocho","法善寺横丁"],["Shinsaibashi / Amerikamura","心斎橋・アメリカ村"],["Kuromon Market","黒門市場"]],
+  },
+  {
+    id:"kyoto", kanji:"京都", nameFr:"Kyoto", nameEn:"Kyoto",
+    rangeFr:"Jeu 10 → Lun 14 sept · 4 nuits", rangeEn:"Thu Sept 10 → Mon 14 · 4 nights",
+    transportFr:"Train depuis Osaka (~30-60 min)", transportEn:"Train from Osaka (~30-60 min)",
+    vibeFr:"Japon historique. Un seul hôtel pour 4 nuits.",
+    vibeEn:"Historic Japan. One hotel for 4 nights.",
+    days:[
+      {dFr:"JEU 10 SEPT", dEn:"THU SEP 10", bodyFr:"Arrivée en soirée depuis Osaka, installation à l'hôtel (4 nuits).", bodyEn:"Evening arrival from Osaka, check into the hotel (4 nights).", flagFr:null, flagEn:null,
+       weather:{descFr:"Nuageux, pluie par moments", descEn:"Cloudy, rain at times", tempFr:"27°C / 23°C", precip:"70%"}},
+      {dFr:"VEN 11 SEPT", dEn:"FRI SEP 11", bodyFr:"Matinée libre jusqu'à ~16h30 : <b>Higashiyama</b> — Kiyomizu-dera → Sannenzaka → Ninenzaka → Kodai-ji/ruelles Higashiyama → Yasaka Shrine → Gion. Retour hôtel en fin d'après-midi.", bodyEn:"Free morning until ~4:30pm: <b>Higashiyama</b> — Kiyomizu-dera → Sannenzaka → Ninenzaka → Kodai-ji/Higashiyama backstreets → Yasaka Shrine → Gion. Back to the hotel in the late afternoon.", flagFr:null, flagEn:null,
+       weather:{descFr:"Nuageux, tournant à la pluie", descEn:"Cloudy, turning to rain", tempFr:"31°C / 23°C", precip:"50%", conf:"E"}},
+      {dFr:"SAM 12 SEPT", dEn:"SAT SEP 12", bodyFr:"<b>Kurama</b> (forêt de cèdres) → <b>Kibune</b> (village rivière, kawadoko si en saison).", bodyEn:"<b>Kurama</b> (cedar forest) → <b>Kibune</b> (river village, kawadoko if in season).", flagFr:"Réserver le resto kawadoko à l'avance si possible", flagEn:"Book the kawadoko restaurant ahead if possible",
+       weather:{descFr:"Ensoleillé, quelques nuages", descEn:"Sunny with some cloud", tempFr:"32°C / 24°C", precip:"40%", conf:"E"}},
+      {dFr:"DIM 13 SEPT", dEn:"SUN SEP 13", bodyFr:"Journée calme, quartier d'Okazaki / Philosopher's Path à pied.", bodyEn:"A quiet day, Okazaki / Philosopher's Path area on foot.", flagFr:null, flagEn:null,
+       weather:{descFr:"Ensoleillé, tournant à la pluie", descEn:"Sunny, turning to rain", tempFr:"31°C / 24°C", precip:"60%", conf:"E"}},
+      {dFr:"LUN 14 SEPT", dEn:"MON SEP 14", bodyFr:"Matin ouest de Kyoto : <b>Nishiki Market</b> (rapide, en chemin) → <b>Otagi Nenbutsu-ji</b> → <b>Saga-Toriimoto</b> (un des deux si le temps presse). Départ hôtel à 14h max, train vers Shirahama (~3h).", bodyEn:"Morning in west Kyoto: <b>Nishiki Market</b> (quick, on the way) → <b>Otagi Nenbutsu-ji</b> → <b>Saga-Toriimoto</b> (pick one if time is tight). Leave the hotel by 2pm at the latest, train to Shirahama (~3h).", flagFr:"Départ à 14h max — journée la plus chargée", flagEn:"Leave by 2pm at the latest — busiest day",
+       weather:{descFr:"Ensoleillé, averse possible (estimation zone Osaka)", descEn:"Sunny, possible shower (Osaka-area estimate)", tempFr:"32°C / 25°C", precip:"50%", conf:"E"}}
+    ],
+    hotelAreaFr:"Okazaki", hotelAreaEn:"Okazaki",
+    names:[["Kiyomizu-dera","清水寺"],["Sannenzaka / Ninenzaka","産寧坂・二寧坂"],["Yasaka Shrine","八坂神社"],["Gion","祇園"],["Kurama-dera","鞍馬寺"],["Kibune-jinja","貴船神社"],["Otagi Nenbutsu-ji","愛宕念仏寺"],["Nishiki Market","錦市場"]],
+  },
+  {
+    id:"shirahama", kanji:"白浜", nameFr:"Shirahama", nameEn:"Shirahama",
+    rangeFr:"Lun 14 → Mar 15 sept · 1 nuit", rangeEn:"Mon Sept 14 → Tue 15 · 1 night",
+    transportFr:"Train limited express Kuroshio depuis Kyoto (~3h)", transportEn:"Kuroshio limited express train from Kyoto (~3h)",
+    vibeFr:"Rupture volontaire de rythme — plage Pacifique, aucune checklist.",
+    vibeEn:"Deliberate change of pace — Pacific beach, no checklist.",
+    days:[
+      {dFr:"LUN 14 SOIR", dEn:"MON SEP 14 EVE", bodyFr:"Plage, baignade, sunset, dîner. Éventuellement <b>Saki-no-Yu</b>, onsen face à l'océan.", bodyEn:"Beach, swim, sunset, dinner. Possibly <b>Saki-no-Yu</b>, an oceanfront onsen.", flagFr:null, flagEn:null,
+       weather:{type:"unavailable"}},
+      {dFr:"MAR 15 SEPT", dEn:"TUE SEP 15", bodyFr:"Journée complète à Shirahama : plage, Sandanbeki, Toretore Ichiba. Vol du soir (18h25) vers Tokyo — choisi pour garder la journée pleine.", bodyEn:"Full day in Shirahama: beach, Sandanbeki, Toretore Ichiba. Evening flight (6:25pm) to Tokyo — chosen to keep the full day.", flagFr:null, flagEn:null,
+       weather:{type:"unavailable"}}
+    ],
+    hotelAreaFr:"Bord de mer", hotelAreaEn:"Seafront",
+    names:[["Shirarahama Beach","白良浜"],["Sandanbeki","三段壁"],["Saki-no-Yu","崎の湯"],["Toretore Ichiba","とれとれ市場"]],
+  },
+  {
+    id:"tokyo", kanji:"東京", nameFr:"Tokyo", nameEn:"Tokyo",
+    rangeFr:"Mar 15 → Sam 19 sept · 4 nuits", rangeEn:"Tue Sept 15 → Sat 19 · 4 nights",
+    transportFr:"Vol depuis Shirahama (JAL)", transportEn:"Flight from Shirahama (JAL)",
+    vibeFr:"Shopping, vintage, Fuji flexible, mix ancien/moderne.",
+    vibeEn:"Shopping, vintage, flexible Fuji day, old/modern mix.",
+    days:[
+      {dFr:"MAR 15 SEPT", dEn:"TUE SEP 15", bodyFr:"Arrivée Haneda 19h40. <b>Nakano Broadway</b> (Pokémon, montres vintage) et Fujiya Camera si l'heure le permet.", bodyEn:"Arrival Haneda 7:40pm. <b>Nakano Broadway</b> (Pokémon, vintage watches) and Fujiya Camera if time allows.", flagFr:null, flagEn:null, weather:{type:"unavailable"}},
+      {dFr:"MER 16 / JEU 17", dEn:"WED 16 / THU 17", bodyFr:"Deux jours interchangeables, décidés à J-1/J-2 selon météo.<br>🗻 <b>Mont Fuji</b> — Kawaguchiko, Oishi Park.<br>🗼 <b>Tokyo contemporain</b> — Shibuya → Harajuku → Omotesando/Aoyama → Koenji.", bodyEn:"Two interchangeable days, decided 1-2 days out by forecast.<br>🗻 <b>Mt Fuji</b> — Kawaguchiko, Oishi Park.<br>🗼 <b>Contemporary Tokyo</b> — Shibuya → Harajuku → Omotesando/Aoyama → Koenji.", flagFr:null, flagEn:null, weather:{type:"unavailable"}},
+      {dFr:"VEN 18 SEPT", dEn:"FRI SEP 18", bodyFr:"<b>Asakusa</b> / Senso-ji puis <b>Ueno / Ameyoko</b>. Fin des achats (montre, caméra, Pokémon).", bodyEn:"<b>Asakusa</b> / Senso-ji then <b>Ueno / Ameyoko</b>. Finish shopping (watch, camera, Pokémon).", flagFr:null, flagEn:null, weather:{type:"unavailable"}},
+      {dFr:"SAM 19 SEPT", dEn:"SAT SEP 19", bodyFr:"Fin de séjour, quartier de l'hôtel. Soir : vol Narita → Séoul.", bodyEn:"Last stretch, hotel's neighborhood. Evening: flight Narita → Seoul.", flagFr:"Vol au départ de Narita, pas Haneda — prévoir 1h-1h30 de trajet", flagEn:"Flight from Narita, not Haneda — allow 1-1.5h transfer", weather:{type:"unavailable"}}
+    ],
+    hotelAreaFr:"Minato-ku, Takanawa", hotelAreaEn:"Minato-ku, Takanawa",
+    names:[["Nakano Broadway","中野ブロードウェイ"],["Shibuya","渋谷"],["Koenji","高円寺"],["Kawaguchiko","河口湖"],["Asakusa","浅草"],["Ueno / Ameyoko","上野・アメ横"]],
+  }
+];
+
+/* ============ BOOKINGS ============ */
+function mapsUrl(addr){ return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(addr); }
+function telUrl(phone){ return "tel:" + phone.replace(/[^0-9+]/g,""); }
+
+const HOTELS = [
+  { kanji:"札幌", name:"KOKO HOTEL Sapporo Ekimae", cityFr:"Sapporo", cityEn:"Sapporo",
+    dateRangeFr:"Dim 6 → Lun 7 sept", dateRangeEn:"Sun Sep 6 → Mon 7", nightsFr:"1 nuit", nightsEn:"1 night",
+    checkinFr:"6 sept, à partir de 15h00", checkinEn:"Sep 6, from 3:00 PM", checkoutFr:"7 sept, avant 11h00", checkoutEn:"Sep 7, before 11:00 AM",
+    room:"Double Room with Small Double Bed — Non-Smoking",
+    address:"060-0001, Sapporo, Chuo-ku, Kita 1-jo, Nishi 3-chome, 3-10", phone:"+81 11-261-3489",
+    confirmation:"5815960773", pin:"6276", price:"¥10,619" },
+  { kanji:"旭川", name:"HOTEL AMANEK Asahikawa", cityFr:"Asahikawa", cityEn:"Asahikawa",
+    dateRangeFr:"Lun 7 → Mer 9 sept", dateRangeEn:"Mon Sep 7 → Wed 9", nightsFr:"2 nuits", nightsEn:"2 nights",
+    checkinFr:"7 sept (15h00-00h00)", checkinEn:"Sep 7 (3:00 PM-12:00 AM)", checkoutFr:"9 sept, avant 11h00", checkoutEn:"Sep 9, before 11:00 AM",
+    room:"Standard Twin Room",
+    address:"070-0031, Asahikawa, 1 JoDori 8 Chome 218", phone:"+81 166-76-5430",
+    confirmation:"6181799980", pin:"3493", price:"¥20,495" },
+  { kanji:"大阪", name:"APA Hotel Namba Ekihigashi", cityFr:"Osaka (Namba)", cityEn:"Osaka (Namba)",
+    dateRangeFr:"Mer 9 → Jeu 10 sept", dateRangeEn:"Wed Sep 9 → Thu 10", nightsFr:"1 nuit", nightsEn:"1 night",
+    checkinFr:"9 sept, à partir de 15h00", checkinEn:"Sep 9, from 3:00 PM", checkoutFr:"10 sept, avant 10h00", checkoutEn:"Sep 10, before 10:00 AM",
+    room:"Single Room — Non-Smoking",
+    address:"542-0075, Osaka, Chuo Ward, Namba Sennichimae 4-29", phone:"+81 6-6630-8411",
+    confirmation:"6965465308", pin:"5122", price:"¥9,090" },
+  { kanji:"京都", name:"Heian No Mori Kyoto", cityFr:"Kyoto", cityEn:"Kyoto",
+    dateRangeFr:"Jeu 10 → Lun 14 sept", dateRangeEn:"Thu Sep 10 → Mon 14", nightsFr:"4 nuits", nightsEn:"4 nights",
+    checkinFr:"10 sept, à partir de 15h00", checkinEn:"Sep 10, from 3:00 PM", checkoutFr:"14 sept, avant 11h00", checkoutEn:"Sep 14, before 11:00 AM",
+    room:"King Room",
+    address:"Kyoto, Sakyo-ku Okazakihigashi Tenno-cho 51", phone:"+81 75-761-3130",
+    confirmation:"6870894039", pin:null, price:"¥44,736",
+    noteFr:"Annulation gratuite jusqu'au 8 sept 23:59.", noteEn:"Free cancellation until Sep 8, 11:59 PM." },
+  { kanji:"白浜", name:"Guest Living Mu Nanki Shirahama", cityFr:"Shirahama", cityEn:"Shirahama",
+    dateRangeFr:"Lun 14 → Mar 15 sept", dateRangeEn:"Mon Sep 14 → Tue 15", nightsFr:"1 nuit", nightsEn:"1 night",
+    checkinFr:"14 sept (16h00-20h00)", checkinEn:"Sep 14 (4:00-8:00 PM)", checkoutFr:"15 sept (7h00-10h00)", checkoutEn:"Sep 15 (7:00-10:00 AM)",
+    room:"Apartment with Sea View",
+    address:"Wakayama, Shirahama, Mishimurogun Shirahama-cho 3076-1", phone:"+81 739-34-2466",
+    confirmation:"6307857280", pin:"0501", price:"≈ $66 / ¥10,505",
+    noteFr:"Annulation gratuite jusqu'au 6 sept 23:59.", noteEn:"Free cancellation until Sep 6, 11:59 PM." },
+  { kanji:"東京", name:"APA Hotel Shinagawa Sengakuji Ekimae", cityFr:"Tokyo", cityEn:"Tokyo",
+    dateRangeFr:"Mar 15 → Sam 19 sept", dateRangeEn:"Tue Sep 15 → Sat 19", nightsFr:"4 nuits", nightsEn:"4 nights",
+    checkinFr:"15 sept, à partir de 15h00", checkinEn:"Sep 15, from 3:00 PM", checkoutFr:"19 sept, avant 10h00", checkoutEn:"Sep 19, before 10:00 AM",
+    room:"Single Room — Non-Smoking (petit-déj inclus)",
+    address:"Tokyo, Minato-ku, Takanawa 2-16-30", phone:"+81 3-5475-6801",
+    confirmation:"5015398345", pin:null, price:"¥72,270",
+    noteFr:"Annulation gratuite jusqu'au 13 sept 23:59.", noteEn:"Free cancellation until Sep 13, 11:59 PM." },
+];
+
+const FLIGHTS = [
+  { kanji:"✈", routeFr:"Séoul → Sapporo", routeEn:"Seoul → Sapporo", dateFr:"Dim 6 sept", dateEn:"Sun Sep 6",
+    segs:[{code1:"ICN",code2:"CTS",t1:"12:15",t2:"15:00",flightNo:"Jeju Air 7C1503",dur:"2h45"}],
+    passenger:"Tom Cohen", confirmation:"NFVF7N", price:"part de $488.97" },
+  { kanji:"✈", routeFr:"Asahikawa → Tokyo → Osaka", routeEn:"Asahikawa → Tokyo → Osaka", dateFr:"Mer 9 sept", dateEn:"Wed Sep 9",
+    segs:[
+      {code1:"AKJ",code2:"HND",t1:"13:40",t2:"15:25",flightNo:"JAL554",dur:"1h45"},
+      {code1:"HND",code2:"ITM",t1:"16:30",t2:"17:35",flightNo:"JAL127",dur:"1h05"}
+    ],
+    passenger:"Cohen Tom (28)", confirmation:"DXF6ZO", ticket:"1312265194971", price:"part de $488.97 (avec le vol Séoul→Sapporo)",
+    noteFr:"Correspondance à Haneda : 1h05 de transit, changement d'avion.", noteEn:"Connection at Haneda: 1h05 transit, change of plane." },
+  { kanji:"✈", routeFr:"Shirahama → Tokyo", routeEn:"Shirahama → Tokyo", dateFr:"Mar 15 sept", dateEn:"Tue Sep 15",
+    segs:[{code1:"SHM",code2:"HND",t1:"18:25",t2:"19:40",flightNo:"JAL218",dur:"1h15"}],
+    passenger:"Tom William Chalom Cohen", confirmation:"—", price:"$144.00" },
+  { kanji:"✈", routeFr:"Tokyo → Séoul", routeEn:"Tokyo → Seoul", dateFr:"Sam 19 sept", dateEn:"Sat Sep 19",
+    segs:[{code1:"NRT",code2:"ICN",t1:"21:45",t2:"00:25",flightNo:"T'Way Air TW248",dur:"2h40"}],
+    passenger:"Tom William Chalom Cohen", confirmation:"—", price:"$323.70",
+    noteFr:"⚠ Départ de Narita, pas Haneda — compter 1h-1h30 depuis l'hôtel de Minato-ku.", noteEn:"⚠ Departs from Narita, not Haneda — allow 1-1.5h from the Minato-ku hotel." },
+  { kanji:"✈", routeFr:"Séoul → New York", routeEn:"Seoul → New York", dateFr:"Dim 20 sept", dateEn:"Sun Sep 20",
+    segs:[{code1:"ICN",code2:"JFK",t1:"10:00",t2:"11:00",flightNo:"Korean Air KE081",dur:"14h00"}],
+    passenger:"Tom Cohen", confirmation:"FUICI9", price:"payé par l'entreprise (Navan)",
+    noteFr:"Voyage professionnel — aucun coût personnel.", noteEn:"Business trip — no personal cost." },
+];
+
+const TRAINS = []; // à venir
+
+/* ============ RENDER: nav + route map + day-by-day ============ */
+function buildNav(){
+  const nav = document.getElementById('stageNav');
+  const all = [
+    {id:"overview", nameFr:"Vue d'ensemble", nameEn:"Overview", kanji:"旅"},
+    {id:"bookings", nameFr:"Réservations", nameEn:"Bookings", kanji:"予"},
+    {id:"budget", nameFr:"Budget", nameEn:"Budget", kanji:"¥"},
+    {id:"daybyday", nameFr:"Jour par jour", nameEn:"Day by day", kanji:"日"}
+  ].concat(STAGES);
+  all.forEach(s=>{
+    const btn = document.createElement('button');
+    btn.dataset.target = s.id;
+    btn.innerHTML = `<span class="kj">${s.kanji}</span><span class="fr">${s.nameFr}</span><span class="en">${s.nameEn}</span>`;
+    btn.onclick = ()=> showPanel(s.id);
+    nav.appendChild(btn);
+  });
+  nav.querySelector('button').classList.add('active');
+}
+
+function buildRouteMap(){
+  const map = document.getElementById('routeMap');
+  STAGES.forEach((s,i)=>{
+    if(i>0){
+      map.innerHTML += `<div class="transport-row">
+        <div class="line-wrap"><div class="stem"></div></div>
+        <div class="t-label"><span class="arrow">↓</span><span class="fr">${s.transportFr}</span><span class="en">${s.transportEn}</span></div>
+      </div>`;
+    }
+    map.innerHTML += `<div class="route-node">
+      <div class="line-wrap"><div class="dot"></div>${i<STAGES.length-1?'<div class="stem"></div>':''}</div>
+      <div class="rn-body">
+        <span class="rn-name"><span class="fr">${s.nameFr}</span><span class="en">${s.nameEn}</span></span><span class="rn-kj">${s.kanji}</span>
+        <div class="rn-dates"><span class="fr">${s.rangeFr}</span><span class="en">${s.rangeEn}</span></div>
+      </div>
+    </div>`;
+  });
+  map.innerHTML += `<div class="transport-row">
+    <div class="line-wrap"></div>
+    <div class="t-label"><span class="arrow">↓</span><span class="fr">Vol Narita → Séoul (19 sept) puis Séoul → New York (20 sept)</span><span class="en">Narita → Seoul flight (Sept 19), then Seoul → New York (Sept 20)</span></div>
+  </div>`;
+}
+
+function weatherHTML(w){
+  if(!w) return '';
+  if(w.type==="unavailable"){
+    return `<div class="weather-unavailable"><span class="fr">Hors de portée des prévisions fiables — à revérifier 5-7 jours avant.</span><span class="en">Beyond reliable forecast range — recheck 5-7 days before.</span></div>`;
+  }
+  return `<div class="weather-summary">
+      <span class="w-temp">${w.tempFr}</span> — <span class="fr">${w.descFr}</span><span class="en">${w.descEn}</span> (${w.precip})
+      ${w.conf ? `<br><span class="weather-confidence fr">Fiabilité indice ${w.conf}</span><span class="weather-confidence en">Confidence rating ${w.conf}</span>`:''}
+    </div>`;
+}
+
+function buildDayByDay(){
+  const list = document.getElementById('dbdList');
+  STAGES.forEach(s=>{
+    s.days.forEach(d=>{
+      list.innerHTML += `<div class="dbd-entry">
+        <div class="dbd-date"><span class="fr">${d.dFr}</span><span class="en">${d.dEn}</span></div>
+        <div class="dbd-body">
+          <div class="dbd-city"><span class="fr">${s.nameFr}</span><span class="en">${s.nameEn}</span><span class="jp">${s.kanji}</span></div>
+          <span class="fr">${d.bodyFr}</span><span class="en">${d.bodyEn}</span>
+          ${d.flagFr? `<br><span class="d-flag fr">${d.flagFr}</span><span class="d-flag en">${d.flagEn}</span>`:''}
+          ${weatherHTML(d.weather)}
+        </div>
+      </div>`;
+    });
+  });
+}
+
+function buildStagePanels(){
+  const wrap = document.getElementById('stagePanels');
+  STAGES.forEach(s=>{
+    const daysHTML = s.days.map(d=>`
+      <div class="day">
+        <div class="d-date"><span class="fr">${d.dFr}</span><span class="en">${d.dEn}</span></div>
+        <div class="d-body">
+          <span class="fr">${d.bodyFr}</span><span class="en">${d.bodyEn}</span>
+          ${d.flagFr? `<br><span class="d-flag fr">${d.flagFr}</span><span class="d-flag en">${d.flagEn}</span>`:''}
+        </div>
+      </div>`).join('');
+    const namesHTML = s.names.map(n=>`<li>${n[0]}<span class="jp">${n[1]}</span></li>`).join('');
+
+    const panel = document.createElement('section');
+    panel.className = 'panel';
+    panel.id = 'panel-'+s.id;
+    panel.innerHTML = `
+      <div class="stage-head">
+        <div class="kanji-huge">${s.kanji}</div>
+        <h2><span class="fr">${s.nameFr}</span><span class="en">${s.nameEn}</span></h2>
+        <div class="range"><span class="fr">${s.rangeFr}</span><span class="en">${s.rangeEn}</span></div>
+      </div>
+      <p class="vibe"><span class="fr">${s.vibeFr}</span><span class="en">${s.vibeEn}</span></p>
+
+      <div class="section-label fr">Programme</div>
+      <div class="section-label en">Schedule</div>
+      ${daysHTML}
+
+      <div class="section-label fr">Quartier</div>
+      <div class="section-label en">Neighborhood</div>
+      <div class="info-row"><div class="k fr">Zone</div><div class="k en">Area</div><div class="v"><span class="fr">${s.hotelAreaFr}</span><span class="en">${s.hotelAreaEn}</span></div></div>
+
+      <div class="section-label fr">Adresses et noms clés</div>
+      <div class="section-label en">Key names and addresses</div>
+      <ul class="names-list">${namesHTML}</ul>
+    `;
+    wrap.appendChild(panel);
+  });
+}
+
+/* ============ RENDER: bookings ============ */
+function hotelCard(h){
+  return `<div class="wallet-card type-hotel">
+    <div class="wc-top">
+      <div class="wc-kanji">${h.kanji}</div>
+      <div class="wc-icon fr">HÔTEL</div><div class="wc-icon en">HOTEL</div>
+      <div class="wc-title">${h.name}</div>
+      <div class="wc-subtitle"><span class="fr">${h.dateRangeFr} · ${h.nightsFr}</span><span class="en">${h.dateRangeEn} · ${h.nightsEn}</span></div>
+    </div>
+    <div class="wc-body">
+      <div class="wc-row"><div class="k fr">Arrivée</div><div class="k en">Check-in</div><div class="v"><span class="fr">${h.checkinFr}</span><span class="en">${h.checkinEn}</span></div></div>
+      <div class="wc-row"><div class="k fr">Départ</div><div class="k en">Check-out</div><div class="v"><span class="fr">${h.checkoutFr}</span><span class="en">${h.checkoutEn}</span></div></div>
+      <div class="wc-row"><div class="k fr">Chambre</div><div class="k en">Room</div><div class="v">${h.room}</div></div>
+      <div class="wc-row"><div class="k fr">Adresse</div><div class="k en">Address</div><div class="v"><a href="${mapsUrl(h.address)}" target="_blank">${h.address}</a></div></div>
+      <div class="wc-row"><div class="k fr">Téléphone</div><div class="k en">Phone</div><div class="v"><a href="${telUrl(h.phone)}">${h.phone}</a></div></div>
+      <div class="wc-row"><div class="k">N° confirmation</div><div class="v">${h.confirmation}</div></div>
+      ${h.pin? `<div class="wc-row"><div class="k">PIN</div><div class="v">${h.pin}</div></div>`:''}
+      <div class="wc-row"><div class="k fr">Prix</div><div class="k en">Price</div><div class="v">${h.price}</div></div>
+      ${h.noteFr? `<div class="wc-note"><span class="fr">${h.noteFr}</span><span class="en">${h.noteEn}</span></div>`:''}
+    </div>
+  </div>`;
+}
+
+function flightCard(f){
+  const segsHTML = f.segs.map((sg,i)=>`
+    <div class="wc-route">
+      <div class="rp"><div class="code">${sg.code1}</div><div class="time">${sg.t1}</div></div>
+      <div class="arrow">✈<br>${sg.dur}</div>
+      <div class="rp"><div class="code">${sg.code2}</div><div class="time">${sg.t2}</div></div>
+    </div>
+    <div class="wc-row" style="margin-top:6px;"><div class="k">${sg.flightNo}</div><div class="v"></div></div>
+    ${i<f.segs.length-1?'<div class="wc-perf"></div>':''}
+  `).join('');
+  return `<div class="wallet-card type-flight">
+    <div class="wc-top">
+      <div class="wc-kanji">${f.kanji}</div>
+      <div class="wc-icon fr">VOL</div><div class="wc-icon en">FLIGHT</div>
+      <div class="wc-title"><span class="fr">${f.routeFr}</span><span class="en">${f.routeEn}</span></div>
+      <div class="wc-subtitle"><span class="fr">${f.dateFr}</span><span class="en">${f.dateEn}</span></div>
+      ${segsHTML}
+    </div>
+    <div class="wc-body">
+      <div class="wc-row"><div class="k fr">Passager</div><div class="k en">Passenger</div><div class="v">${f.passenger}</div></div>
+      <div class="wc-row"><div class="k">Confirmation</div><div class="v">${f.confirmation}</div></div>
+      ${f.ticket? `<div class="wc-row"><div class="k fr">N° billet</div><div class="k en">Ticket #</div><div class="v">${f.ticket}</div></div>`:''}
+      <div class="wc-row"><div class="k fr">Prix</div><div class="k en">Price</div><div class="v">${f.price}</div></div>
+      ${f.noteFr? `<div class="wc-note ${f.noteFr.indexOf('⚠')>=0?'warn':''}"><span class="fr">${f.noteFr}</span><span class="en">${f.noteEn}</span></div>`:''}
+    </div>
+  </div>`;
+}
+
+let currentFilter = 'all';
+function buildFilters(){
+  const row = document.getElementById('filterRow');
+  const filters = [
+    {id:'all', labelFr:'Tout', labelEn:'All'},
+    {id:'hotel', labelFr:'Hôtels', labelEn:'Hotels'},
+    {id:'flight', labelFr:'Vols', labelEn:'Flights'},
+    {id:'train', labelFr:'Trains', labelEn:'Trains'},
+  ];
+  filters.forEach(f=>{
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn' + (f.id==='all'?' active':'');
+    btn.dataset.filter = f.id;
+    btn.innerHTML = `<span class="fr">${f.labelFr}</span><span class="en">${f.labelEn}</span>`;
+    btn.onclick = ()=>{ currentFilter = f.id; renderBookings(); document.querySelectorAll('.filter-btn').forEach(b=>b.classList.toggle('active', b.dataset.filter===f.id)); };
+    row.appendChild(btn);
+  });
+}
+
+function renderBookings(){
+  const list = document.getElementById('bookingsList');
+  list.innerHTML = '';
+  let html = '';
+  if(currentFilter==='all' || currentFilter==='hotel'){ HOTELS.forEach(h=> html += hotelCard(h)); }
+  if(currentFilter==='all' || currentFilter==='flight'){ FLIGHTS.forEach(f=> html += flightCard(f)); }
+  if(currentFilter==='train'){
+    if(TRAINS.length===0){
+      html += `<div class="wc-empty"><span class="fr">Pas encore réservé — les trains internes arrivent bientôt.</span><span class="en">Not booked yet — internal trains coming soon.</span></div>`;
+    }
+  }
+  list.innerHTML = html;
+}
+
+/* ============ RENDER: budget ============ */
+const BUDGET = {
+  target: 3000,
+  hotelsUSD: Math.round((10619+20495+9090+44736+10505+72270)/160),
+  flightsUSD: Math.round(488.97+144.00+323.70),
+};
+function buildBudget(){
+  const spent = BUDGET.hotelsUSD + BUDGET.flightsUSD;
+  const remaining = BUDGET.target - spent;
+  const pct = Math.round(spent/BUDGET.target*100);
+  document.querySelector('.budget-hero .amount').innerHTML =
+    `$${spent.toLocaleString()} <span class="of fr">sur $${BUDGET.target.toLocaleString()}</span><span class="of en">of $${BUDGET.target.toLocaleString()}</span>`;
+  document.querySelector('.budget-hero .pct.fr').textContent = pct + "% du budget engagé";
+  document.querySelector('.budget-hero .pct.en').textContent = pct + "% of budget committed";
+  document.querySelector('.gauge .fill').style.width = pct + "%";
+
+  const rows = [
+    {labelFr:"Hôtels (6)", labelEn:"Hotels (6)", amt:BUDGET.hotelsUSD, max:spent},
+    {labelFr:"Vols personnels (4)", labelEn:"Personal flights (4)", amt:BUDGET.flightsUSD, max:spent},
+    {labelFr:"Repas + shopping courant (restant)", labelEn:"Meals + general shopping (left)", amt:remaining, max:spent},
+  ];
+  const wrap = document.getElementById('budgetBreakdown');
+  rows.forEach(r=>{
+    const w = Math.max(4, Math.round(r.amt/spent*100));
+    wrap.innerHTML += `<div class="budget-row">
+      <div class="b-label"><span class="fr">${r.labelFr}</span><span class="en">${r.labelEn}</span></div>
+      <div class="b-bar"><div class="b-fill" style="width:${w}%;"></div></div>
+      <div class="b-amt">$${r.amt.toLocaleString()}</div>
+    </div>`;
+  });
+}
+
+/* ============ nav + lang ============ */
+function showPanel(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  document.querySelectorAll('nav.stages button').forEach(b=>b.classList.toggle('active', b.dataset.target===id));
+  window.scrollTo({top:0, behavior:'instant'});
+}
+function setLang(lang){
+  document.body.classList.remove('lang-fr','lang-en');
+  document.body.classList.add('lang-'+lang);
+}
+
+buildNav();
+buildRouteMap();
+buildFilters();
+renderBookings();
+buildBudget();
+buildDayByDay();
+buildStagePanels();
+</script>
+</body>
+</html>

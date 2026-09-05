@@ -27,9 +27,8 @@
     --line-strong:#B9B4A4;
     --safe-t: env(safe-area-inset-top, 0px);
     --safe-b: env(safe-area-inset-bottom, 0px);
-    --safe-l: env(safe-area-inset-left, 0px);
-    --safe-r: env(safe-area-inset-right, 0px);
     --bottom-nav-h: 62px;
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
   html,body{margin:0;padding:0;}
@@ -41,14 +40,20 @@
     -webkit-font-smoothing:antialiased;
     padding-bottom: calc(var(--bottom-nav-h) + var(--safe-b) + 10px);
     overscroll-behavior-y: none;
+    position:relative;
+  }
+  /* Fine paper-grain texture — subtle, not a filter/gradient trick, ties to the washi theme */
+  body::before{
+    content:"";
+    position:fixed; inset:0; z-index:1000; pointer-events:none;
+    opacity:0.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
   h1,h2,h3,.serif{
     font-family:"Iowan Old Style","Palatino Linotype",Georgia,"Hiragino Mincho ProN",serif;
     font-weight:600;
     letter-spacing:0.01em;
   }
-  .lang-fr .en{display:none;}
-  .lang-en .fr{display:none;}
   button, .tap{ min-height:44px; }
   a{ -webkit-tap-highlight-color: transparent; }
 
@@ -69,22 +74,12 @@
   header .eyebrow{ font-size:12.5px; color:rgba(246,245,241,0.7); margin-bottom:6px; }
   header h1{ font-size:26px; margin:0 0 4px; color:var(--paper); position:relative; }
   header .dates{ font-size:14px; color:rgba(246,245,241,0.82); position:relative; }
-  .lang-toggle{
-    position:absolute; top: calc(16px + var(--safe-t)); right:16px;
-    display:flex; border:1px solid rgba(246,245,241,0.5); border-radius:2px; overflow:hidden; z-index:2;
-  }
-  .lang-toggle button{
-    background:transparent; border:none; color:rgba(246,245,241,0.75);
-    font-size:12px; letter-spacing:0.04em; padding:6px 10px; cursor:pointer; font-family:inherit; min-height:auto;
-  }
-  .lang-fr .lang-toggle .set-fr, .lang-en .lang-toggle .set-en{
-    background:rgba(246,245,241,0.16); color:var(--paper);
-  }
 
   /* ===== Sub-nav pills (used inside Route + More tabs) ===== */
   nav.stages{
     position:sticky; top:0; z-index:10;
-    display:flex; overflow-x:auto; background:var(--paper);
+    display:flex; overflow-x:auto; background:rgba(246,245,241,0.75);
+    -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
     border-bottom:1px solid var(--line-strong);
     -webkit-overflow-scrolling:touch; scrollbar-width:none;
   }
@@ -124,18 +119,24 @@
 
   .section-label{
     font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-soft); margin:26px 0 10px;
-    display:flex; align-items:center; gap:8px;
   }
   .section-label:first-of-type{margin-top:0;}
 
-  .day{ display:flex; gap:12px; padding:10px 0; border-top:1px solid var(--line); }
+  .day{ display:flex; gap:12px; padding:12px 0; border-top:1px solid var(--line); }
   .day:first-of-type{border-top:none;}
   .day .d-date{ flex:0 0 78px; font-size:12px; color:var(--indigo); font-weight:600; padding-top:2px; }
   .day .d-body{flex:1; font-size:14px;}
   .day .d-body b{font-weight:600;}
-  .day .d-flag{
+  .d-flag{
     display:inline-block; margin-top:6px; font-size:12px; color:var(--shu);
     border:1px solid var(--shu); border-radius:2px; padding:2px 6px;
+  }
+
+  /* Program text as readable steps, not one dense paragraph */
+  .program-steps p{ margin:0 0 11px; padding-left:13px; position:relative; font-size:14px; }
+  .program-steps p:last-child{ margin-bottom:0; }
+  .program-steps p::before{
+    content:""; position:absolute; left:0; top:8px; width:4px; height:4px; border-radius:50%; background:var(--line-strong);
   }
 
   .info-row{ display:flex; justify-content:space-between; gap:14px; padding:9px 0; border-top:1px solid var(--line); font-size:14px; }
@@ -144,9 +145,10 @@
   .info-row .v{flex:1; text-align:right;}
 
   .names-list{font-size:14px; margin:0; padding-left:0; list-style:none;}
-  .names-list li{ padding:7px 0; border-top:1px solid var(--line); }
+  .names-list li{ padding:9px 0; border-top:1px solid var(--line); }
   .names-list li:first-of-type{border-top:none;}
-  .names-list li .jp{ color:var(--ink-soft); font-size:12.5px; margin-left:6px; }
+  .names-list .name-line .jp{ color:var(--ink-soft); font-size:12.5px; margin-left:6px; }
+  .names-list .name-desc{ font-size:12.5px; color:var(--ink-soft); margin-top:3px; }
 
   /* route map */
   .route-map{ padding:6px 4px 4px 4px; margin-bottom:4px; }
@@ -165,11 +167,11 @@
   .transport-row .t-label .arrow{color:var(--line-strong); margin-right:4px;}
 
   .hero-note{ font-size:13.5px; color:var(--ink-soft); margin:6px 0 22px; }
-  footer{ text-align:center; font-size:11.5px; color:var(--ink-soft); padding:18px; }
 
   /* ===== Day-by-day ===== */
-  .dbd-entry{ display:flex; gap:12px; padding:12px 0; border-top:1px solid var(--line); }
+  .dbd-entry{ display:flex; gap:12px; padding:14px 0; border-top:1px solid var(--line); cursor:pointer; align-items:flex-start; }
   .dbd-entry:first-of-type{border-top:none;}
+  .dbd-entry:active{ background:var(--paper-alt); }
   .dbd-entry .dbd-date{ flex:0 0 78px; font-size:12px; color:var(--indigo); font-weight:600; padding-top:2px; }
   .dbd-entry .dbd-body{flex:1; font-size:14px;}
   .dbd-entry .dbd-city{
@@ -178,10 +180,7 @@
   .dbd-entry .dbd-city .jp{
     font-family:"Hiragino Mincho ProN","Yu Mincho",serif; font-size:12px; color:var(--ink-soft); font-weight:400; margin-left:6px;
   }
-  .dbd-entry .d-flag{
-    display:inline-block; margin-top:6px; font-size:12px; color:var(--shu);
-    border:1px solid var(--shu); border-radius:2px; padding:2px 6px;
-  }
+  .dbd-entry .dbd-chevron{ flex:0 0 auto; color:var(--line-strong); font-size:20px; padding-top:2px; }
   .weather-chip{
     display:inline-flex; align-items:center; gap:5px; margin-top:8px;
     background:var(--paper-alt); border:1px solid var(--line); border-radius:20px;
@@ -197,15 +196,19 @@
   .filter-btn{
     flex:0 0 auto; font-family:inherit; font-size:13px; padding:8px 14px; border-radius:20px;
     border:1px solid var(--line-strong); background:var(--paper); color:var(--ink-soft); cursor:pointer;
+    transition: transform 220ms var(--spring), background 150ms ease;
   }
+  .filter-btn:active{ transform:scale(0.94); }
   .filter-btn.active{ background:var(--indigo); border-color:var(--indigo); color:var(--paper); font-weight:600; }
 
   .wallet-card{
     background:var(--paper); border:1px solid var(--line-strong); border-radius:14px;
-    margin-bottom:16px; overflow:hidden; box-shadow:0 2px 6px rgba(27,27,24,0.10);
-    transition: box-shadow 180ms ease, transform 180ms ease;
+    margin-bottom:16px; overflow:hidden;
+    box-shadow: 0 1px 2px rgba(27,27,24,0.05), 0 10px 24px -12px rgba(27,27,24,0.22);
+    transition: box-shadow 220ms ease, transform 220ms var(--spring);
   }
-  .wallet-card:active{ box-shadow:0 1px 2px rgba(27,27,24,0.10); transform:scale(0.995); }
+  .wallet-card:active{ box-shadow:0 1px 2px rgba(27,27,24,0.08); transform:scale(0.985); }
+  .wallet-card.flash{ box-shadow: 0 0 0 3px var(--indigo); }
   .wallet-card .wc-top{
     background:var(--indigo); color:var(--paper); padding:14px 16px 12px; position:relative; overflow:hidden;
   }
@@ -231,6 +234,13 @@
   }
   .wallet-card .wc-perf::before{ left:-24px; }
   .wallet-card .wc-perf::after{ right:-24px; }
+  /* Ticket-stub seam between the colored header and the card body — every wallet card */
+  .wc-tear{ height:0; border-top:1.5px dashed rgba(246,245,241,0.45); margin:0 16px; position:relative; }
+  .wc-tear::before, .wc-tear::after{
+    content:""; position:absolute; top:-8px; width:16px; height:16px; border-radius:50%; background:var(--paper);
+  }
+  .wc-tear::before{ left:-24px; }
+  .wc-tear::after{ right:-24px; }
   .wallet-card .wc-body{ padding:14px 16px 16px; }
   .wc-row{ display:flex; justify-content:space-between; gap:10px; padding:6px 0; font-size:13.5px; border-top:1px solid var(--line); }
   .wc-row:first-of-type{ border-top:none; }
@@ -249,9 +259,9 @@
     flex:1 1 auto; min-width:0; text-align:center; font-family:inherit; font-size:12.5px;
     padding:9px 8px; border-radius:8px; border:1px solid var(--line-strong); background:var(--paper);
     color:var(--indigo); cursor:pointer; text-decoration:none; display:inline-flex; align-items:center;
-    justify-content:center; gap:4px; transition: background 150ms ease, transform 150ms ease;
+    justify-content:center; gap:4px; transition: background 150ms ease, transform 220ms var(--spring);
   }
-  .wc-actions .wc-btn:active{ background:var(--paper-alt); transform:scale(0.97); }
+  .wc-actions .wc-btn:active{ background:var(--paper-alt); transform:scale(0.94); }
   .wc-btn.copied{ color:var(--green); border-color:var(--green); }
   .addr-jp{ font-family:"Hiragino Mincho ProN","Yu Mincho",serif; }
 
@@ -273,7 +283,7 @@
   .budget-row:first-of-type{ border-top:none; }
   .budget-row .b-label{ flex:0 0 34%; font-size:13.5px; }
   .budget-row .b-bar{ flex:1; height:9px; background:var(--paper-alt); border-radius:5px; overflow:hidden; }
-  .budget-row .b-bar .b-fill{ height:100%; background:var(--indigo); transition: width 300ms ease; }
+  .budget-row .b-bar .b-fill{ height:100%; background:var(--indigo); }
   .budget-row .b-amt{ flex:0 0 auto; font-size:13px; color:var(--ink-soft); min-width:64px; text-align:right; }
   .budget-note{ font-size:12.5px; color:var(--ink-soft); margin-top:18px; background:var(--paper-alt); padding:10px 12px; border-radius:8px; }
 
@@ -281,16 +291,16 @@
     display:inline-flex; align-items:center; justify-content:center; gap:6px;
     background:var(--indigo); color:var(--paper); border:none; border-radius:10px;
     font-family:inherit; font-size:14px; font-weight:600; padding:12px 18px; cursor:pointer;
-    box-shadow:0 2px 6px rgba(27,27,24,0.15); transition: transform 150ms ease, box-shadow 150ms ease;
+    box-shadow:0 2px 6px rgba(27,27,24,0.15); transition: transform 220ms var(--spring), box-shadow 150ms ease;
   }
-  .btn-primary:active{ transform:scale(0.97); box-shadow:0 1px 3px rgba(27,27,24,0.15); }
+  .btn-primary:active{ transform:scale(0.95); box-shadow:0 1px 3px rgba(27,27,24,0.15); }
   .btn-secondary{
     display:inline-flex; align-items:center; justify-content:center; gap:6px;
     background:var(--paper); color:var(--indigo); border:1px solid var(--line-strong); border-radius:10px;
     font-family:inherit; font-size:14px; padding:11px 16px; cursor:pointer;
-    transition: background 150ms ease, transform 150ms ease;
+    transition: background 150ms ease, transform 220ms var(--spring);
   }
-  .btn-secondary:active{ background:var(--paper-alt); transform:scale(0.97); }
+  .btn-secondary:active{ background:var(--paper-alt); transform:scale(0.95); }
   .btn-danger{ color:var(--shu); border-color:var(--shu); }
 
   .expense-list{ margin-top:8px; }
@@ -330,13 +340,17 @@
   .modal-actions > *{ flex:1; }
 
   /* ===== Phrases ===== */
+  .search-input{
+    width:100%; font-family:inherit; font-size:15px; padding:11px 14px; border:1px solid var(--line-strong);
+    border-radius:20px; background:var(--paper-alt); color:var(--ink); margin-bottom:16px; -webkit-appearance:none;
+  }
   .phrase-card{
     background:var(--paper); border:1px solid var(--line-strong); border-radius:12px;
-    padding:16px; margin-bottom:14px; box-shadow:0 1px 3px rgba(27,27,24,0.06);
+    padding:16px; margin-bottom:14px; box-shadow: 0 1px 2px rgba(27,27,24,0.05), 0 8px 18px -12px rgba(27,27,24,0.16);
   }
   .phrase-card .ph-cat{ font-size:10.5px; text-transform:uppercase; letter-spacing:0.06em; color:var(--shu); margin-bottom:8px; }
   .phrase-card .ph-jp{
-    font-family:"Hiragino Mincho ProN","Yu Mincho",serif; font-size:23px; line-height:1.4; margin-bottom:6px;
+    font-family:"Hiragino Mincho ProN","Yu Mincho",serif; font-size:22px; line-height:1.4; margin-bottom:6px;
   }
   .phrase-card .ph-romaji{ font-size:13px; color:var(--ink-soft); font-style:italic; margin-bottom:4px; }
   .phrase-card .ph-fr{ font-size:14px; margin-bottom:12px; }
@@ -350,15 +364,18 @@
   .activity-card{
     background:var(--paper); border:1px solid var(--line); border-radius:10px;
     padding:12px 14px; margin-bottom:10px;
+    box-shadow: 0 1px 2px rgba(27,27,24,0.04), 0 6px 14px -10px rgba(27,27,24,0.14);
   }
   .activity-card .ac-title{ font-size:14px; font-weight:600; }
-  .activity-card .ac-meta{ font-size:12px; color:var(--ink-soft); margin-top:3px; }
+  .activity-card .ac-desc{ font-size:12.5px; color:var(--ink-soft); margin-top:3px; }
+  .activity-card .ac-meta{ font-size:12px; color:var(--ink-soft); margin-top:6px; }
   .activity-card .ac-note{ font-size:12px; color:var(--ink-soft); margin-top:6px; font-style:italic; }
   .activity-card .ac-row{ display:flex; align-items:center; gap:8px; margin-top:10px; }
   .activity-card .ac-add{
     font-family:inherit; font-size:12.5px; padding:8px 12px; border-radius:8px; border:1px solid var(--indigo);
-    background:var(--indigo); color:var(--paper); cursor:pointer;
+    background:var(--indigo); color:var(--paper); cursor:pointer; transition: transform 220ms var(--spring);
   }
+  .activity-card .ac-add:active{ transform:scale(0.94); }
   .activity-card .ac-add.added{ background:var(--paper); color:var(--green); border-color:var(--green); }
   .activity-card .ac-link{ font-size:12.5px; color:var(--indigo); text-decoration:none; padding:8px 4px; }
   .added-list{ margin-top:10px; }
@@ -368,14 +385,14 @@
   }
   .added-chip button{ background:none; border:none; color:var(--ink-soft); cursor:pointer; font-size:15px; padding:0 2px; min-height:auto; }
 
-  /* ===== Today tab ===== */
+  /* ===== Today / day-detail cards ===== */
   .today-hero{ padding:2px 0 6px; }
   .today-hero .th-eyebrow{ font-size:11.5px; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft); }
   .today-hero .th-city{ font-size:24px; margin:2px 0 6px; }
   .today-hero .th-city .jp{ font-family:"Hiragino Mincho ProN","Yu Mincho",serif; font-size:15px; color:var(--ink-soft); margin-left:8px; font-weight:400; }
   .today-card{
     background:var(--paper); border:1px solid var(--line-strong); border-radius:14px; padding:16px;
-    margin-bottom:16px; box-shadow:0 2px 6px rgba(27,27,24,0.08);
+    margin-bottom:16px; box-shadow: 0 1px 2px rgba(27,27,24,0.05), 0 10px 22px -12px rgba(27,27,24,0.18);
   }
   .today-card .tc-label{ font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft); margin-bottom:8px; }
   .today-card .tc-title{ font-size:16px; font-weight:600; margin-bottom:4px; }
@@ -393,9 +410,11 @@
   /* ===== Bottom nav + hanko ===== */
   .bottom-nav{
     position:fixed; left:0; right:0; bottom:0; z-index:50;
-    display:flex; background:var(--paper); border-top:1px solid var(--line-strong);
+    display:flex; background:rgba(246,245,241,0.82);
+    -webkit-backdrop-filter:blur(20px); backdrop-filter:blur(20px);
+    border-top:1px solid var(--line-strong);
     padding-bottom: var(--safe-b);
-    box-shadow: 0 -2px 8px rgba(27,27,24,0.06);
+    box-shadow: 0 -1px 2px rgba(27,27,24,0.04), 0 -8px 20px -6px rgba(27,27,24,0.10);
   }
   .bottom-nav button{
     flex:1; background:none; border:none; font-family:inherit; cursor:pointer;
@@ -405,7 +424,7 @@
   .bottom-nav button .bn-kj{
     font-family:"Hiragino Mincho ProN","Yu Mincho",serif; font-size:18px; line-height:1; position:relative;
   }
-  .bottom-nav button .bn-label{ font-size:10px; letter-spacing:0.02em; }
+  .bottom-nav button .bn-label{ font-size:9.5px; letter-spacing:0.01em; text-align:center; }
   .bottom-nav button.active{ color:var(--indigo); }
   .bottom-nav button.active .bn-kj::after{
     content:""; position:absolute; left:50%; top:50%; width:30px; height:30px;
@@ -418,9 +437,10 @@
   .more-menu-item{
     display:flex; align-items:center; gap:14px; padding:16px; background:var(--paper);
     border:1px solid var(--line-strong); border-radius:12px; cursor:pointer; text-align:left;
-    font-family:inherit; box-shadow:0 1px 3px rgba(27,27,24,0.06); transition: transform 150ms ease;
+    font-family:inherit; box-shadow: 0 1px 2px rgba(27,27,24,0.05), 0 8px 18px -12px rgba(27,27,24,0.16);
+    transition: transform 220ms var(--spring);
   }
-  .more-menu-item:active{ transform:scale(0.98); }
+  .more-menu-item:active{ transform:scale(0.97); }
   .more-menu-item .mi-kj{ font-family:"Hiragino Mincho ProN","Yu Mincho",serif; font-size:22px; color:var(--indigo); flex:0 0 auto; }
   .more-menu-item .mi-label{ font-size:15px; font-weight:600; }
   .back-row{ margin-bottom:14px; }
@@ -430,19 +450,13 @@
   }
 </style>
 </head>
-<body class="lang-fr">
+<body>
 
 <header>
   <div class="kanji-bg">旅</div>
-  <div class="lang-toggle">
-    <button class="set-fr" onclick="setLang('fr')">FR</button>
-    <button class="set-en" onclick="setLang('en')">EN</button>
-  </div>
-  <div class="eyebrow fr">VOYAGE — SÉOUL ⇄ JAPON</div>
-  <div class="eyebrow en">TRIP — SEOUL ⇄ JAPAN</div>
+  <div class="eyebrow">VOYAGE — SÉOUL ⇄ JAPON</div>
   <h1>日本 2026</h1>
-  <div class="dates fr">6 → 20 septembre · Hokkaido → Osaka → Kyoto → Shirahama → Tokyo</div>
-  <div class="dates en">Sept 6 → 20 · Hokkaido → Osaka → Kyoto → Shirahama → Tokyo</div>
+  <div class="dates">6 → 20 septembre · Hokkaido → Osaka → Kyoto → Shirahama → Tokyo</div>
 </header>
 
 <main id="app">
@@ -457,15 +471,11 @@
     <nav class="stages" id="routeSubNav"></nav>
 
     <div class="sub-panel active" id="route-overview" data-route="overview">
-      <div class="section-label fr">Vue d'ensemble</div>
-      <div class="section-label en">Overview</div>
-      <p class="hero-note fr">Sapporo → Asahikawa (Biei + Asahidake) → Osaka → Kyoto → Shirahama → Tokyo. Le tronçon Alpes initial a été remplacé par Hokkaido pour la météo.</p>
-      <p class="hero-note en">Sapporo → Asahikawa (Biei + Asahidake) → Osaka → Kyoto → Shirahama → Tokyo. The original Alps leg was swapped for Hokkaido due to weather.</p>
+      <div class="section-label">Vue d'ensemble</div>
+      <p class="hero-note">Sapporo → Asahikawa (Biei + Asahidake) → Osaka → Kyoto → Shirahama → Tokyo. Le tronçon Alpes initial a été remplacé par Hokkaido pour la météo.</p>
       <div class="route-map" id="routeMap"></div>
-      <div class="section-label fr">Tout est réservé</div>
-      <div class="section-label en">Everything is booked</div>
-      <p class="hero-note fr" style="margin-bottom:8px;">6 hôtels, 5 vols. Détails dans l'onglet <b>予 Wallet</b>. Suivi des dépenses dans <b>¥ Budget</b>.</p>
-      <p class="hero-note en" style="margin-bottom:8px;">6 hotels, 5 flights. Full details under <b>予 Wallet</b>. Spending tracked under <b>¥ Budget</b>.</p>
+      <div class="section-label">Tout est réservé</div>
+      <p class="hero-note" style="margin-bottom:8px;">6 hôtels, 5 vols. Détails dans l'onglet <b>予 Résa</b>. Suivi des dépenses dans <b>¥ Budget</b>.</p>
     </div>
 
     <div id="stagePanels"><!-- per-city sub panels injected --></div>
@@ -474,8 +484,7 @@
   <!-- ================= WALLET (bookings) ================= -->
   <section class="tab-panel" id="tab-wallet">
     <div style="padding:20px 18px 8px;">
-      <div class="section-label fr">Réservations</div>
-      <div class="section-label en">Bookings</div>
+      <div class="section-label">Réservations</div>
       <div class="filter-row" id="filterRow"></div>
       <div id="bookingsList"></div>
     </div>
@@ -484,32 +493,25 @@
   <!-- ================= BUDGET ================= -->
   <section class="tab-panel" id="tab-budget">
     <div style="padding:20px 18px 8px;">
-      <div class="section-label fr">Budget</div>
-      <div class="section-label en">Budget</div>
+      <div class="section-label">Budget</div>
       <div class="budget-hero">
         <div class="amount" id="budgetAmount"></div>
-        <div class="pct fr" id="budgetPctFr"></div>
-        <div class="pct en" id="budgetPctEn"></div>
+        <div class="pct" id="budgetPct"></div>
         <div class="gauge"><div class="fill" id="budgetGaugeFill"></div></div>
-        <div class="gauge-labels"><span>$0</span><span class="fr">Objectif $3,000</span><span class="en">Target $3,000</span></div>
+        <div class="gauge-labels"><span>$0</span><span>Objectif $3,000</span></div>
       </div>
 
       <div class="budget-stats" id="budgetStats"></div>
 
-      <button class="btn-primary" id="addExpenseBtn" style="width:100%;">
-        <span class="fr">+ Dépense</span><span class="en">+ Expense</span>
-      </button>
+      <button class="btn-primary" id="addExpenseBtn" style="width:100%;">+ Dépense</button>
 
-      <div class="section-label fr">Répartition</div>
-      <div class="section-label en">Breakdown</div>
+      <div class="section-label">Répartition</div>
       <div id="budgetBreakdown"></div>
 
-      <div class="section-label fr">Dépenses ajoutées</div>
-      <div class="section-label en">Added expenses</div>
+      <div class="section-label">Dépenses ajoutées</div>
       <div class="expense-list" id="expenseList"></div>
 
-      <div class="budget-note fr">Objectif de $3,000 = logement + transport + repas + shopping courant, converti depuis JPY à ¥160/$ et depuis KRW à ₩1350/$ (taux fixes, éditables dans data.js). Montre vintage et appareil photo sont hors de ce budget. Le vol Séoul→JFK est pris en charge par l'entreprise (non compté).</div>
-      <div class="budget-note en">The $3,000 target covers lodging + transport + meals + general shopping, converted from JPY at ¥160/$ and from KRW at ₩1350/$ (fixed rates, editable in data.js). Vintage watch and camera are outside this budget. The Seoul→JFK flight is company-paid (not counted).</div>
+      <div class="budget-note">Objectif de $3,000 = logement + transport + repas + shopping courant, converti depuis JPY à ¥160/$ et depuis KRW à ₩1350/$ (taux fixes, éditables dans data.js). Montre vintage et appareil photo sont hors de ce budget. Le vol Séoul→JFK est pris en charge par l'entreprise (non compté).</div>
     </div>
   </section>
 
@@ -518,59 +520,55 @@
     <div style="padding:20px 18px 8px;">
 
       <div class="sub-panel active" id="more-menu">
-        <div class="section-label fr">Plus</div>
-        <div class="section-label en">More</div>
+        <div class="section-label">Plus</div>
         <div class="more-menu">
           <button class="more-menu-item" data-more="daybyday">
             <span class="mi-kj">日</span>
-            <span class="mi-label fr">Jour par jour</span><span class="mi-label en">Day by day</span>
+            <span class="mi-label">Jour par jour</span>
           </button>
           <button class="more-menu-item" data-more="phrases">
             <span class="mi-kj">語</span>
-            <span class="mi-label fr">Phrases japonaises</span><span class="mi-label en">Japanese phrases</span>
+            <span class="mi-label">Phrases japonaises</span>
           </button>
           <button class="more-menu-item" data-more="settings">
             <span class="mi-kj">設</span>
-            <span class="mi-label fr">Réglages &amp; sauvegarde</span><span class="mi-label en">Settings &amp; backup</span>
+            <span class="mi-label">Réglages &amp; sauvegarde</span>
           </button>
         </div>
       </div>
 
       <div class="sub-panel" id="more-daybyday">
-        <div class="back-row"><button class="back-btn" data-back="more">‹ <span class="fr">Retour</span><span class="en">Back</span></button></div>
-        <div class="section-label fr">Programme jour par jour</div>
-        <div class="section-label en">Day-by-day schedule</div>
-        <p class="hero-note fr">Météo croisée (tenki.jp) au 4 septembre. Fiable à court terme, indicative au-delà de 10 jours, absente au-delà de 13 jours.</p>
-        <p class="hero-note en">Weather cross-checked (tenki.jp) as of Sept 4. Reliable short-term, indicative beyond 10 days, unavailable beyond 13 days.</p>
+        <div class="back-row"><button class="back-btn" data-back="menu">‹ Retour</button></div>
+        <div class="section-label">Programme jour par jour</div>
+        <p class="hero-note">Météo croisée (tenki.jp) au 4 septembre. Fiable à court terme, indicative au-delà de 10 jours, absente au-delà de 13 jours. Touche un jour pour le détail.</p>
         <div id="dbdList"></div>
       </div>
 
+      <div class="sub-panel" id="more-daydetail">
+        <div class="back-row"><button class="back-btn" data-back="daybyday">‹ Retour au programme</button></div>
+        <div id="dayDetailContent"></div>
+      </div>
+
       <div class="sub-panel" id="more-phrases">
-        <div class="back-row"><button class="back-btn" data-back="more">‹ <span class="fr">Retour</span><span class="en">Back</span></button></div>
-        <div class="section-label fr">Phrases japonaises</div>
-        <div class="section-label en">Japanese phrases</div>
-        <p class="hero-note fr">Structure prête — le contenu définitif (cacherout, Chabbat, politesse) arrive dans un second temps.</p>
-        <p class="hero-note en">Structure ready — final content (kashrut, Shabbat, courtesy) is coming in a follow-up pass.</p>
+        <div class="back-row"><button class="back-btn" data-back="menu">‹ Retour</button></div>
+        <div class="section-label">Phrases japonaises</div>
+        <input type="search" class="search-input" id="phraseSearch" placeholder="Rechercher une phrase…">
         <div id="phrasesList"></div>
       </div>
 
       <div class="sub-panel" id="more-settings">
-        <div class="back-row"><button class="back-btn" data-back="more">‹ <span class="fr">Retour</span><span class="en">Back</span></button></div>
-        <div class="section-label fr">Sauvegarde</div>
-        <div class="section-label en">Backup</div>
-        <p class="hero-note fr">Toutes tes données ajoutées (checklist, dépenses, activités) vivent uniquement sur ce téléphone. Exporte régulièrement pour ne rien perdre si Safari vide le cache.</p>
-        <p class="hero-note en">Everything you add (checklist, expenses, activities) lives only on this phone. Export regularly so nothing is lost if Safari clears its cache.</p>
+        <div class="back-row"><button class="back-btn" data-back="menu">‹ Retour</button></div>
+        <div class="section-label">Sauvegarde</div>
+        <p class="hero-note">Toutes tes données ajoutées (checklist, dépenses, activités) vivent uniquement sur ce téléphone. Exporte régulièrement pour ne rien perdre si Safari vide le cache.</p>
         <div style="display:flex; flex-direction:column; gap:10px; margin-top:14px;">
-          <button class="btn-primary" id="exportBtn"><span class="fr">Exporter (JSON)</span><span class="en">Export (JSON)</span></button>
-          <button class="btn-secondary" id="importBtn"><span class="fr">Importer un fichier</span><span class="en">Import a file</span></button>
+          <button class="btn-primary" id="exportBtn">Exporter (JSON)</button>
+          <button class="btn-secondary" id="importBtn">Importer un fichier</button>
           <input type="file" id="importFile" accept="application/json" style="display:none;">
-          <button class="btn-secondary btn-danger" id="resetBtn"><span class="fr">Réinitialiser mes données</span><span class="en">Reset my data</span></button>
+          <button class="btn-secondary btn-danger" id="resetBtn">Réinitialiser mes données</button>
         </div>
 
-        <div class="section-label fr">À propos</div>
-        <div class="section-label en">About</div>
-        <p class="hero-note fr">Fonctionne hors-ligne · installable sur l'écran d'accueil · aucune dépendance externe · aucune donnée envoyée où que ce soit.</p>
-        <p class="hero-note en">Works offline · installable to the home screen · no external dependencies · no data sent anywhere.</p>
+        <div class="section-label">À propos</div>
+        <p class="hero-note">Fonctionne hors-ligne · installable sur l'écran d'accueil · aucune dépendance externe · aucune donnée envoyée où que ce soit.</p>
       </div>
 
     </div>
@@ -582,14 +580,14 @@
 
 <div class="modal-backdrop" id="expenseModalBackdrop">
   <div class="modal-sheet">
-    <h3><span class="fr">Nouvelle dépense</span><span class="en">New expense</span></h3>
+    <h3>Nouvelle dépense</h3>
     <form id="expenseForm">
       <div class="form-row">
-        <label class="fr">Montant</label><label class="en">Amount</label>
+        <label>Montant</label>
         <input type="number" step="0.01" min="0" id="expAmount" required inputmode="decimal">
       </div>
       <div class="form-row">
-        <label class="fr">Devise</label><label class="en">Currency</label>
+        <label>Devise</label>
         <select id="expCurrency">
           <option value="JPY">JPY (¥)</option>
           <option value="USD">USD ($)</option>
@@ -597,17 +595,17 @@
         </select>
       </div>
       <div class="form-row">
-        <label class="fr">Catégorie</label><label class="en">Category</label>
+        <label>Catégorie</label>
         <select id="expCategory">
           <option value="Transport">Transport</option>
-          <option value="Repas">Repas / Meals</option>
-          <option value="Activités">Activités / Activities</option>
+          <option value="Repas">Repas</option>
+          <option value="Activités">Activités</option>
           <option value="Shopping">Shopping</option>
-          <option value="Autre">Autre / Other</option>
+          <option value="Autre">Autre</option>
         </select>
       </div>
       <div class="form-row">
-        <label class="fr">Ville</label><label class="en">City</label>
+        <label>Ville</label>
         <select id="expCity">
           <option value="Sapporo">Sapporo</option>
           <option value="Asahikawa">Asahikawa</option>
@@ -618,20 +616,20 @@
         </select>
       </div>
       <div class="form-row">
-        <label class="fr">Date</label><label class="en">Date</label>
+        <label>Date</label>
         <input type="date" id="expDate" min="2026-09-06" max="2026-09-20">
       </div>
       <div class="form-row">
-        <label class="fr">Note</label><label class="en">Note</label>
+        <label>Note</label>
         <input type="text" id="expNote" maxlength="80" placeholder="…">
       </div>
       <div class="form-row check">
         <input type="checkbox" id="expOutOfBudget">
-        <label for="expOutOfBudget"><span class="fr">Hors budget (ex : montre, appareil photo)</span><span class="en">Outside budget (e.g. watch, camera)</span></label>
+        <label for="expOutOfBudget">Hors budget (ex : montre, appareil photo)</label>
       </div>
       <div class="modal-actions">
-        <button type="button" class="btn-secondary" id="expenseCancelBtn"><span class="fr">Annuler</span><span class="en">Cancel</span></button>
-        <button type="submit" class="btn-primary"><span class="fr">Ajouter</span><span class="en">Add</span></button>
+        <button type="button" class="btn-secondary" id="expenseCancelBtn">Annuler</button>
+        <button type="submit" class="btn-primary">Ajouter</button>
       </div>
     </form>
   </div>
