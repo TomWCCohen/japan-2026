@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<title>日本 — 6→20 Sept 2026</title>
+<meta name="theme-color" content="#1F3A5C">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="日本 2026">
+<meta name="description" content="Compagnon de voyage — Japon, 6→20 septembre 2026">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" href="icons/icon-192.png">
+<style>
+  :root{
+    --paper:#F6F5F1;
+    --paper-alt:#EDEBE3;
+    --ink:#1B1B18;
+    --ink-soft:#5B594F;
+    --indigo:#1F3A5C;
+    --indigo-deep:#152840;
+    --shu:#B14A2B;
+    --green:#3D6B4C;
+    --line:#D9D5C8;
+    --line-strong:#B9B4A4;
+    --safe-t: env(safe-area-inset-top, 0px);
+    --safe-b: env(safe-area-inset-bottom, 0px);
+    --safe-l: env(safe-area-inset-left, 0px);
+    --safe-r: env(safe-area-inset-right, 0px);
+    --bottom-nav-h: 62px;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom: calc(var(--bottom-nav-h) + var(--safe-b) + 10px);
+    overscroll-behavior-y: none;
+  }
+  h1,h2,h3,.serif{
+    font-family:"Iowan Old Style","Palatino Linotype",Georgia,"Hiragino Mincho ProN",serif;
+    font-weight:600;
+    letter-spacing:0.01em;
+  }
+  .lang-fr .en{display:none;}
+  .lang-en .fr{display:none;}
+  button, .tap{ min-height:44px; }
+  a{ -webkit-tap-highlight-color: transparent; }
+
+  /* ===== Header ===== */
+  header{
+    padding: calc(18px + var(--safe-t)) 18px 16px;
+    border-bottom:1px solid var(--line-strong);
+    position:relative;
+    overflow:hidden;
+    background:var(--indigo);
+    color:var(--paper);
+  }
+  header .kanji-bg{
+    position:absolute; right:-18px; top:-30px;
+    font-family:"Hiragino Mincho ProN","Yu Mincho",serif;
+    font-size:150px; color:rgba(246,245,241,0.08); line-height:1; pointer-events:none;
+  }
+  header .eyebrow{ font-size:12.5px; color:rgba(246,245,241,0.7); margin-bottom:6px; }
+  header h1{ font-size:26px; margin:0 0 4px; color:var(--paper); position:relative; }
+  header .dates{ font-size:14px; color:rgba(246,245,241,0.82); position:relative; }
+  .lang-toggle{
+    position:absolute; top: calc(16px + var(--safe-t)); right:16px;
+    display:flex; border:1px solid rgba(246,245,241,0.5); border-radius:2px; overflow:hidden; z-index:2;
+  }
+  .lang-toggle button{
+    background:transparent; border:none; color:rgba(246,245,241,0.75);
+    font-size:12px; letter-spacing:0.04em; padding:6px 10px; cursor:pointer; font-family:inherit; min-height:auto;
+  }
+  .lang-fr .lang-toggle .set-fr, .lang-en .lang-toggle .set-en{
+    background:rgba(246,245,241,0.16); color:var(--paper);
+  }
+
+  /* ===== Sub-nav pills (used inside Route + More tabs) ===== */
+  nav.stages{
+    position:sticky; top:0; z-index:10;
+    display:flex; overflow-x:auto; background:var(--paper);
+    border-bottom:1px solid var(--line-strong);
+    -webkit-overflow-scrolling:touch; scrollbar-width:none;
+  }
+  nav.stages::-webkit-scrollbar{display:none;}
+  nav.stages button{
+    flex:0 0 auto; background:none; border:none; border-right:1px solid var(--line);
+    padding:12px 14px; font-family:inherit; font-size:13px; color:var(--ink-soft);
+    cursor:pointer; white-space:nowrap; position:relative;
+  }
+  nav.stages button .kj{
+    display:block; font-family:"Hiragino Mincho ProN","Yu Mincho",serif;
+    font-size:11px; color:var(--line-strong); margin-bottom:2px;
+  }
+  nav.stages button.active{ color:var(--indigo); font-weight:600; }
+  nav.stages button.active::after{
+    content:""; position:absolute; left:0; right:0; bottom:-1px; height:2px; background:var(--indigo);
+  }
+
+  /* ===== Tab panels (top-level) + sub panels ===== */
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block; animation: fadein 180ms ease;}
+  .sub-panel{display:none; padding:20px 18px 8px;}
+  .sub-panel.active{display:block; animation: fadein 160ms ease;}
+  @keyframes fadein{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
+
+  .stage-head{ position:relative; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--line); }
+  .stage-head .kanji-huge{
+    position:absolute; right:-6px; top:-10px;
+    font-family:"Hiragino Mincho ProN","Yu Mincho",serif; font-size:78px; color:var(--paper-alt); z-index:0; line-height:1;
+  }
+  .stage-head h2{ font-size:22px; margin:0 0 4px; position:relative; z-index:1; }
+  .stage-head .range{ font-size:13px; color:var(--ink-soft); position:relative; z-index:1; }
+  .vibe{
+    font-size:14.5px; margin:12px 0 20px; font-style:italic;
+    border-left:2px solid var(--indigo); padding-left:12px;
+  }
+
+  .section-label{
+    font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-soft); margin:26px 0 10px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .section-label:first-of-type{margin-top:0;}
+
+  .day{ display:flex; gap:12px; padding:10px 0; border-top:1px solid var(--line); }
+  .day:first-of-type{border-top:none;}
+  .day .d-date{ flex:0 0 78px; font-size:12px; color:var(--indigo); font-weight:600; padding-top:2px; }
+  .day .d-body{flex:1; font-size:14px;}
+  .day .d-body b{font-weight:600;}
+  .day .d-flag{
+    display:inline-block; margin-top:6px; font-size:12px; color:var(--shu);
+    border:1px solid var(--shu); border-radius:2px; padding:2px 6px;
+  }
+
+  .info-row{ display:flex; justify-content:space-between; gap:14px; padding:9px 0; border-top:1px solid var(--line); font-size:14px; }
+  .info-row:first-of-type{border-top:none;}
+  .info-row .k{color:var(--ink-soft); flex:0 0 40%;}
+  .info-row .v{flex:1; text-align:right;}
+
+  .names-list{font-size:14px; margin:0; padding-left:0; list-style:none;}
+  .names-list li{ padding:7px 0; border-top:1px solid var(--line); }
+  .names-list li:first-of-type{border-top:none;}
+  .names-list li .jp{ color:var(--ink-soft); font-size:12.5px; margin-left:6px; }
+
+  /* route map */
+  .route-map{ padding:6px 4px 4px 4px; margin-bottom:4px; }
+  .route-node{ display:flex; align-items:center; gap:14px; padding:9px 0; }
+  .route-node .line-wrap{ flex:0 0 20px; display:flex; flex-direction:column; align-items:center; align-self:stretch; }
+  .route-node .dot{ width:11px; height:11px; border-radius:50%; background:var(--indigo); border:2px solid var(--indigo); flex:0 0 auto; }
+  .route-node .stem{ width:1px; flex:1; background:var(--line-strong); }
+  .route-node .rn-body{flex:1; padding-bottom:2px;}
+  .route-node .rn-name{font-size:15px; font-weight:600;}
+  .route-node .rn-kj{ font-family:"Hiragino Mincho ProN","Yu Mincho",serif; font-size:12px; color:var(--ink-soft); margin-left:6px; }
+  .route-node .rn-dates{font-size:12.5px; color:var(--ink-soft);}
+  .transport-row{ display:flex; align-items:center; gap:14px; padding:2px 0; }
+  .transport-row .line-wrap{ flex:0 0 20px; display:flex; justify-content:center; align-self:stretch; }
+  .transport-row .line-wrap .stem{width:1px; flex:1; background:var(--line-strong);}
+  .transport-row .t-label{ font-size:12px; color:var(--indigo); padding:3px 0; }
+  .transport-row .t-label .arrow{color:var(--line-strong); margin-right:4px;}
+
+  .hero-note{ font-size:13.5px; color:var(--ink-soft); margin:6px 0 22px; }
+  footer{ text-align:center; font-size:11.5px; color:var(--ink-soft); padding:18px; }
+
+  /* ===== Day-by-day ===== */
+  .dbd-entry{ display:flex; gap:12px; padding:12px 0; border-top:1px solid var(--line); }
+  .dbd-entry:first-of-type{border-top:none;}
+  .dbd-entry .dbd-date{ flex:0 0 78px; font-size:12px; color:var(--indigo); font-weight:600; padding-top:2px; }
+  .dbd-entry .dbd-body{flex:1; font-size:14px;}
+  .dbd-entry .dbd-city{
+    font-family:"Iowan Old Style","Palatino Linotype",Georgia,serif; font-size:15px; font-weight:600; margin-bottom:3px;
+  }
+  .dbd-entry .dbd-city .jp{
+    font-family:"Hiragino Mincho ProN","Yu Mincho",serif; font-size:12px; color:var(--ink-soft); font-weight:400; margin-left:6px;
+  }
+  .dbd-entry .d-flag{
+    display:inline-block; margin-top:6px; font-size:12px; color:var(--shu);
+    border:1px solid var(--shu); border-radius:2px; padding:2px 6px;
+  }
+  .weather-chip{
+    display:inline-flex; align-items:center; gap:5px; margin-top:8px;
+    background:var(--paper-alt); border:1px solid var(--line); border-radius:20px;
+    padding:4px 10px; font-size:12px; color:var(--ink); font-variant-numeric:tabular-nums;
+  }
+  .weather-chip .w-emoji{ font-size:13px; }
+  .weather-chip .w-hi{ font-weight:600; color:var(--indigo); }
+  .weather-confidence{ display:inline-block; margin-left:6px; font-size:10.5px; color:var(--shu); }
+  .weather-unavailable{ margin-top:9px; font-size:12.5px; color:var(--ink-soft); font-style:italic; }
+
+  /* ===== Bookings (wallet cards) ===== */
+  .filter-row{ display:flex; gap:8px; margin-bottom:18px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .filter-btn{
+    flex:0 0 auto; font-family:inherit; font-size:13px; padding:8px 14px; border-radius:20px;
+    border:1px solid var(--line-strong); background:var(--paper); color:var(--ink-soft); cursor:pointer;
+  }
+  .filter-btn.active{ background:var(--indigo); border-color:var(--indigo); color:var(--paper); font-weight:600; }
+
+  .wallet-card{
+    background:var(--paper); border:1px solid var(--line-strong); border-radius:14px;
+    margin-bottom:16px; overflow:hidden; box-shadow:0 2px 6px rgba(27,27,24,0.10);
+    transition: box-shadow 180ms ease, transform 180ms ease;
+  }
+  .wallet-card:active{ box-shadow:0 1px 2px rgba(27,27,24,0.10); transform:scale(0.995); }
+  .wallet-card .wc-top{
+    background:var(--indigo); color:var(--paper); padding:14px 16px 12px; position:relative; overflow:hidden;
+  }
+  .wallet-card.type-flight .wc-top{ background:var(--indigo-deep); }
+  .wallet-card.type-train .wc-top{ background:var(--green); }
+  .wallet-card .wc-top .wc-kanji{
+    position:absolute; right:-4px; top:-14px; font-family:"Hiragino Mincho ProN","Yu Mincho",serif;
+    font-size:64px; color:rgba(246,245,241,0.12); line-height:1;
+  }
+  .wallet-card .wc-icon{ font-size:13px; opacity:0.85; margin-bottom:2px; letter-spacing:0.04em; text-transform:uppercase; }
+  .wallet-card .wc-title{ font-family:"Iowan Old Style","Palatino Linotype",Georgia,serif; font-size:19px; font-weight:600; position:relative; z-index:1; }
+  .wallet-card .wc-subtitle{ font-size:13px; color:rgba(246,245,241,0.82); margin-top:2px; position:relative; z-index:1; }
+  .wallet-card .wc-route{ display:flex; align-items:center; gap:10px; margin-top:10px; position:relative; z-index:1; }
+  .wallet-card .wc-route .rp{ text-align:center; }
+  .wallet-card .wc-route .rp .code{ font-size:22px; font-weight:700; font-family:"Iowan Old Style",Georgia,serif; }
+  .wallet-card .wc-route .rp .time{ font-size:12px; color:rgba(246,245,241,0.82); }
+  .wallet-card .wc-route .arrow{ flex:1; text-align:center; color:rgba(246,245,241,0.5); font-size:13px; }
+  .wallet-card .wc-perf{
+    height:0; border-top:1.5px dashed var(--line-strong); margin:0 16px; position:relative;
+  }
+  .wallet-card .wc-perf::before, .wallet-card .wc-perf::after{
+    content:""; position:absolute; top:-8px; width:16px; height:16px; border-radius:50%; background:var(--paper);
+  }
+  .wallet-card .wc-perf::before{ left:-24px; }
+  .wallet-card .wc-perf::after{ right:-24px; }
+  .wallet-card .wc-body{ padding:14px 16px 16px; }
+  .wc-row{ display:flex; justify-content:space-between; gap:10px; padding:6px 0; font-size:13.5px; border-top:1px solid var(--line); }
+  .wc-row:first-of-type{ border-top:none; }
+  .wc-row .k{ color:var(--ink-soft); flex:0 0 42%; }
+  .wc-row .v{ flex:1; text-align:right; }
+  .wc-row a{ color:var(--indigo); text-decoration:none; }
+  .wc-note{
+    margin-top:10px; font-size:12px; color:var(--ink-soft); background:var(--paper-alt);
+    padding:8px 10px; border-radius:6px;
+  }
+  .wc-note.warn{ color:var(--shu); background:#F5E9E4; }
+  .wc-empty{ text-align:center; padding:40px 20px; color:var(--ink-soft); font-size:14px; }
+
+  .wc-actions{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .wc-actions .wc-btn{
+    flex:1 1 auto; min-width:0; text-align:center; font-family:inherit; font-size:12.5px;
+    padding:9px 8px; border-radius:8px; border:1px solid var(--line-strong); background:var(--paper);
+    color:var(--indigo); cursor:pointer; text-decoration:none; display:inline-flex; align-items:center;
+    justify-content:center; gap:4px; transition: background 150ms ease, transform 150ms ease;
+  }
+  .wc-actions .wc-btn:active{ background:var(--paper-alt); transform:scale(0.97); }
+  .wc-btn.copied{ color:var(--green); border-color:var(--green); }
+  .addr-jp{ font-family:"Hiragino Mincho ProN","Yu Mincho",serif; }
+
+  /* ===== Budget ===== */
+  .budget-hero{ text-align:center; padding:10px 0 20px; }
+  .budget-hero .amount{ font-family:"Iowan Old Style",Georgia,serif; font-size:36px; color:var(--indigo); }
+  .budget-hero .amount .of{ font-size:18px; color:var(--ink-soft); font-family:inherit; }
+  .budget-hero .pct{ font-size:13px; color:var(--ink-soft); margin-top:4px; }
+  .gauge{ height:14px; background:var(--paper-alt); border-radius:8px; overflow:hidden; border:1px solid var(--line); margin:14px 0 6px; }
+  .gauge .fill{ height:100%; background:var(--indigo); border-radius:8px 0 0 8px; transition: width 300ms ease; }
+  .gauge-labels{ display:flex; justify-content:space-between; font-size:11.5px; color:var(--ink-soft); }
+
+  .budget-stats{ display:flex; gap:10px; margin:18px 0; }
+  .budget-stat{ flex:1; text-align:center; background:var(--paper-alt); border-radius:10px; padding:10px 6px; }
+  .budget-stat .bs-amt{ font-size:17px; font-weight:600; color:var(--indigo); font-family:"Iowan Old Style",Georgia,serif; }
+  .budget-stat .bs-label{ font-size:10.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.04em; margin-top:2px; }
+
+  .budget-row{ display:flex; align-items:center; gap:12px; padding:12px 0; border-top:1px solid var(--line); }
+  .budget-row:first-of-type{ border-top:none; }
+  .budget-row .b-label{ flex:0 0 34%; font-size:13.5px; }
+  .budget-row .b-bar{ flex:1; height:9px; background:var(--paper-alt); border-radius:5px; overflow:hidden; }
+  .budget-row .b-bar .b-fill{ height:100%; background:var(--indigo); transition: width 300ms ease; }
+  .budget-row .b-amt{ flex:0 0 auto; font-size:13px; color:var(--ink-soft); min-width:64px; text-align:right; }
+  .budget-note{ font-size:12.5px; color:var(--ink-soft); margin-top:18px; background:var(--paper-alt); padding:10px 12px; border-radius:8px; }
+
+  .btn-primary{
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+    background:var(--indigo); color:var(--paper); border:none; border-radius:10px;
+    font-family:inherit; font-size:14px; font-weight:600; padding:12px 18px; cursor:pointer;
+    box-shadow:0 2px 6px rgba(27,27,24,0.15); transition: transform 150ms ease, box-shadow 150ms ease;
+  }
+  .btn-primary:active{ transform:scale(0.97); box-shadow:0 1px 3px rgba(27,27,24,0.15); }
+  .btn-secondary{
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+    background:var(--paper); color:var(--indigo); border:1px solid var(--line-strong); border-radius:10px;
+    font-family:inherit; font-size:14px; padding:11px 16px; cursor:pointer;
+    transition: background 150ms ease, transform 150ms ease;
+  }
+  .btn-secondary:active{ background:var(--paper-alt); transform:scale(0.97); }
+  .btn-danger{ color:var(--shu); border-color:var(--shu); }
+
+  .expense-list{ margin-top:8px; }
+  .expense-item{ display:flex; align-items:center; gap:10px; padding:11px 0; border-top:1px solid var(--line); }
+  .expense-item:first-of-type{ border-top:none; }
+  .expense-item .ei-main{ flex:1; min-width:0; }
+  .expense-item .ei-note{ font-size:13.5px; font-weight:600; }
+  .expense-item .ei-meta{ font-size:11.5px; color:var(--ink-soft); margin-top:2px; }
+  .expense-item .ei-amt{ font-size:13.5px; font-weight:600; color:var(--indigo); white-space:nowrap; }
+  .expense-item .ei-del{ flex:0 0 auto; background:none; border:none; color:var(--ink-soft); font-size:18px; cursor:pointer; padding:4px 6px; min-height:auto; }
+  .oob-tag{ display:inline-block; font-size:10px; color:var(--shu); border:1px solid var(--shu); border-radius:3px; padding:1px 5px; margin-left:6px; vertical-align:middle; }
+
+  /* ===== Modal (expense form) ===== */
+  .modal-backdrop{
+    position:fixed; inset:0; background:rgba(27,27,24,0.4); z-index:100;
+    display:flex; align-items:flex-end; justify-content:center;
+    opacity:0; pointer-events:none; transition:opacity 180ms ease;
+  }
+  .modal-backdrop.open{ opacity:1; pointer-events:auto; }
+  .modal-sheet{
+    background:var(--paper); width:100%; max-width:520px; border-radius:18px 18px 0 0;
+    padding:20px 20px calc(20px + var(--safe-b)); max-height:88vh; overflow-y:auto;
+    transform:translateY(16px); transition:transform 180ms ease;
+  }
+  .modal-backdrop.open .modal-sheet{ transform:translateY(0); }
+  .modal-sheet h3{ margin:0 0 14px; font-size:18px; }
+  .form-row{ margin-bottom:12px; }
+  .form-row label{ display:block; font-size:12px; color:var(--ink-soft); margin-bottom:5px; text-transform:uppercase; letter-spacing:0.04em; }
+  .form-row input, .form-row select, .form-row textarea{
+    width:100%; font-family:inherit; font-size:15px; padding:11px 12px; border:1px solid var(--line-strong);
+    border-radius:8px; background:var(--paper); color:var(--ink);
+  }
+  .form-row.check{ display:flex; align-items:center; gap:8px; }
+  .form-row.check input{ width:auto; }
+  .form-row.check label{ margin:0; text-transform:none; font-size:14px; color:var(--ink); }
+  .modal-actions{ display:flex; gap:10px; margin-top:16px; }
+  .modal-actions > *{ flex:1; }
+
+  /* ===== Phrases ===== */
+  .phrase-card{
+    background:var(--paper); border:1px solid var(--line-strong); border-radius:12px;
+    padding:16px; margin-bottom:14px; box-shadow:0 1px 3px rgba(27,27,24,0.06);
+  }
+  .phrase-card .ph-cat{ font-size:10.5px; text-transform:uppercase; letter-spacing:0.06em; color:var(--shu); margin-bottom:8px; }
+  .phrase-card .ph-jp{
+    font-family:"Hiragino Mincho ProN","Yu Mincho",serif; font-size:23px; line-height:1.4; margin-bottom:6px;
+  }
+  .phrase-card .ph-romaji{ font-size:13px; color:var(--ink-soft); font-style:italic; margin-bottom:4px; }
+  .phrase-card .ph-fr{ font-size:14px; margin-bottom:12px; }
+  .phrase-card .ph-copy{
+    font-family:inherit; font-size:12.5px; padding:8px 14px; border-radius:8px; border:1px solid var(--line-strong);
+    background:var(--paper); color:var(--indigo); cursor:pointer; transition: background 150ms ease;
+  }
+  .phrase-card .ph-copy.copied{ color:var(--green); border-color:var(--green); }
+
+  /* ===== Activities ===== */
+  .activity-card{
+    background:var(--paper); border:1px solid var(--line); border-radius:10px;
+    padding:12px 14px; margin-bottom:10px;
+  }
+  .activity-card .ac-title{ font-size:14px; font-weight:600; }
+  .activity-card .ac-meta{ font-size:12px; color:var(--ink-soft); margin-top:3px; }
+  .activity-card .ac-note{ font-size:12px; color:var(--ink-soft); margin-top:6px; font-style:italic; }
+  .activity-card .ac-row{ display:flex; align-items:center; gap:8px; margin-top:10px; }
+  .activity-card .ac-add{
+    font-family:inherit; font-size:12.5px; padding:8px 12px; border-radius:8px; border:1px solid var(--indigo);
+    background:var(--indigo); color:var(--paper); cursor:pointer;
+  }
+  .activity-card .ac-add.added{ background:var(--paper); color:var(--green); border-color:var(--green); }
+  .activity-card .ac-link{ font-size:12.5px; color:var(--indigo); text-decoration:none; padding:8px 4px; }
+  .added-list{ margin-top:10px; }
+  .added-chip{
+    display:inline-flex; align-items:center; gap:6px; font-size:12.5px; background:var(--paper-alt);
+    border-radius:20px; padding:6px 8px 6px 12px; margin:0 6px 6px 0;
+  }
+  .added-chip button{ background:none; border:none; color:var(--ink-soft); cursor:pointer; font-size:15px; padding:0 2px; min-height:auto; }
+
+  /* ===== Today tab ===== */
+  .today-hero{ padding:2px 0 6px; }
+  .today-hero .th-eyebrow{ font-size:11.5px; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft); }
+  .today-hero .th-city{ font-size:24px; margin:2px 0 6px; }
+  .today-hero .th-city .jp{ font-family:"Hiragino Mincho ProN","Yu Mincho",serif; font-size:15px; color:var(--ink-soft); margin-left:8px; font-weight:400; }
+  .today-card{
+    background:var(--paper); border:1px solid var(--line-strong); border-radius:14px; padding:16px;
+    margin-bottom:16px; box-shadow:0 2px 6px rgba(27,27,24,0.08);
+  }
+  .today-card .tc-label{ font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft); margin-bottom:8px; }
+  .today-card .tc-title{ font-size:16px; font-weight:600; margin-bottom:4px; }
+  .today-card .tc-sub{ font-size:13px; color:var(--ink-soft); }
+  .today-empty{ text-align:center; padding:50px 20px; color:var(--ink-soft); }
+  .today-empty .kanji-huge2{ font-family:"Hiragino Mincho ProN","Yu Mincho",serif; font-size:56px; color:var(--paper-alt); margin-bottom:10px; }
+
+  .checklist{ margin-top:4px; }
+  .checklist-item{ display:flex; align-items:center; gap:10px; padding:10px 0; border-top:1px solid var(--line); }
+  .checklist-item:first-of-type{ border-top:none; }
+  .checklist-item input[type=checkbox]{ width:20px; height:20px; flex:0 0 auto; }
+  .checklist-item label{ font-size:14px; flex:1; }
+  .checklist-item.done label{ color:var(--ink-soft); text-decoration:line-through; }
+
+  /* ===== Bottom nav + hanko ===== */
+  .bottom-nav{
+    position:fixed; left:0; right:0; bottom:0; z-index:50;
+    display:flex; background:var(--paper); border-top:1px solid var(--line-strong);
+    padding-bottom: var(--safe-b);
+    box-shadow: 0 -2px 8px rgba(27,27,24,0.06);
+  }
+  .bottom-nav button{
+    flex:1; background:none; border:none; font-family:inherit; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:2px; padding:8px 2px 6px; color:var(--ink-soft); position:relative; height: var(--bottom-nav-h);
+  }
+  .bottom-nav button .bn-kj{
+    font-family:"Hiragino Mincho ProN","Yu Mincho",serif; font-size:18px; line-height:1; position:relative;
+  }
+  .bottom-nav button .bn-label{ font-size:10px; letter-spacing:0.02em; }
+  .bottom-nav button.active{ color:var(--indigo); }
+  .bottom-nav button.active .bn-kj::after{
+    content:""; position:absolute; left:50%; top:50%; width:30px; height:30px;
+    transform:translate(-50%,-50%) rotate(-8deg); border:1.5px solid var(--shu); border-radius:6px;
+    opacity:0.55; z-index:-1;
+  }
+
+  /* ===== More tab menu ===== */
+  .more-menu{ display:flex; flex-direction:column; gap:10px; }
+  .more-menu-item{
+    display:flex; align-items:center; gap:14px; padding:16px; background:var(--paper);
+    border:1px solid var(--line-strong); border-radius:12px; cursor:pointer; text-align:left;
+    font-family:inherit; box-shadow:0 1px 3px rgba(27,27,24,0.06); transition: transform 150ms ease;
+  }
+  .more-menu-item:active{ transform:scale(0.98); }
+  .more-menu-item .mi-kj{ font-family:"Hiragino Mincho ProN","Yu Mincho",serif; font-size:22px; color:var(--indigo); flex:0 0 auto; }
+  .more-menu-item .mi-label{ font-size:15px; font-weight:600; }
+  .back-row{ margin-bottom:14px; }
+  .back-btn{
+    background:none; border:none; color:var(--indigo); font-family:inherit; font-size:14px; cursor:pointer;
+    padding:6px 0; display:inline-flex; align-items:center; gap:4px;
+  }
+</style>
+</head>
+<body class="lang-fr">
+
+<header>
+  <div class="kanji-bg">旅</div>
+  <div class="lang-toggle">
+    <button class="set-fr" onclick="setLang('fr')">FR</button>
+    <button class="set-en" onclick="setLang('en')">EN</button>
+  </div>
+  <div class="eyebrow fr">VOYAGE — SÉOUL ⇄ JAPON</div>
+  <div class="eyebrow en">TRIP — SEOUL ⇄ JAPAN</div>
+  <h1>日本 2026</h1>
+  <div class="dates fr">6 → 20 septembre · Hokkaido → Osaka → Kyoto → Shirahama → Tokyo</div>
+  <div class="dates en">Sept 6 → 20 · Hokkaido → Osaka → Kyoto → Shirahama → Tokyo</div>
+</header>
+
+<main id="app">
+
+  <!-- ================= TODAY ================= -->
+  <section class="tab-panel active" id="tab-today">
+    <div style="padding:20px 18px 8px;" id="todayContent"><!-- injected --></div>
+  </section>
+
+  <!-- ================= ROUTE ================= -->
+  <section class="tab-panel" id="tab-route">
+    <nav class="stages" id="routeSubNav"></nav>
+
+    <div class="sub-panel active" id="route-overview" data-route="overview">
+      <div class="section-label fr">Vue d'ensemble</div>
+      <div class="section-label en">Overview</div>
+      <p class="hero-note fr">Sapporo → Asahikawa (Biei + Asahidake) → Osaka → Kyoto → Shirahama → Tokyo. Le tronçon Alpes initial a été remplacé par Hokkaido pour la météo.</p>
+      <p class="hero-note en">Sapporo → Asahikawa (Biei + Asahidake) → Osaka → Kyoto → Shirahama → Tokyo. The original Alps leg was swapped for Hokkaido due to weather.</p>
+      <div class="route-map" id="routeMap"></div>
+      <div class="section-label fr">Tout est réservé</div>
+      <div class="section-label en">Everything is booked</div>
+      <p class="hero-note fr" style="margin-bottom:8px;">6 hôtels, 5 vols. Détails dans l'onglet <b>予 Wallet</b>. Suivi des dépenses dans <b>¥ Budget</b>.</p>
+      <p class="hero-note en" style="margin-bottom:8px;">6 hotels, 5 flights. Full details under <b>予 Wallet</b>. Spending tracked under <b>¥ Budget</b>.</p>
+    </div>
+
+    <div id="stagePanels"><!-- per-city sub panels injected --></div>
+  </section>
+
+  <!-- ================= WALLET (bookings) ================= -->
+  <section class="tab-panel" id="tab-wallet">
+    <div style="padding:20px 18px 8px;">
+      <div class="section-label fr">Réservations</div>
+      <div class="section-label en">Bookings</div>
+      <div class="filter-row" id="filterRow"></div>
+      <div id="bookingsList"></div>
+    </div>
+  </section>
+
+  <!-- ================= BUDGET ================= -->
+  <section class="tab-panel" id="tab-budget">
+    <div style="padding:20px 18px 8px;">
+      <div class="section-label fr">Budget</div>
+      <div class="section-label en">Budget</div>
+      <div class="budget-hero">
+        <div class="amount" id="budgetAmount"></div>
+        <div class="pct fr" id="budgetPctFr"></div>
+        <div class="pct en" id="budgetPctEn"></div>
+        <div class="gauge"><div class="fill" id="budgetGaugeFill"></div></div>
+        <div class="gauge-labels"><span>$0</span><span class="fr">Objectif $3,000</span><span class="en">Target $3,000</span></div>
+      </div>
+
+      <div class="budget-stats" id="budgetStats"></div>
+
+      <button class="btn-primary" id="addExpenseBtn" style="width:100%;">
+        <span class="fr">+ Dépense</span><span class="en">+ Expense</span>
+      </button>
+
+      <div class="section-label fr">Répartition</div>
+      <div class="section-label en">Breakdown</div>
+      <div id="budgetBreakdown"></div>
+
+      <div class="section-label fr">Dépenses ajoutées</div>
+      <div class="section-label en">Added expenses</div>
+      <div class="expense-list" id="expenseList"></div>
+
+      <div class="budget-note fr">Objectif de $3,000 = logement + transport + repas + shopping courant, converti depuis JPY à ¥160/$ et depuis KRW à ₩1350/$ (taux fixes, éditables dans data.js). Montre vintage et appareil photo sont hors de ce budget. Le vol Séoul→JFK est pris en charge par l'entreprise (non compté).</div>
+      <div class="budget-note en">The $3,000 target covers lodging + transport + meals + general shopping, converted from JPY at ¥160/$ and from KRW at ₩1350/$ (fixed rates, editable in data.js). Vintage watch and camera are outside this budget. The Seoul→JFK flight is company-paid (not counted).</div>
+    </div>
+  </section>
+
+  <!-- ================= MORE ================= -->
+  <section class="tab-panel" id="tab-more">
+    <div style="padding:20px 18px 8px;">
+
+      <div class="sub-panel active" id="more-menu">
+        <div class="section-label fr">Plus</div>
+        <div class="section-label en">More</div>
+        <div class="more-menu">
+          <button class="more-menu-item" data-more="daybyday">
+            <span class="mi-kj">日</span>
+            <span class="mi-label fr">Jour par jour</span><span class="mi-label en">Day by day</span>
+          </button>
+          <button class="more-menu-item" data-more="phrases">
+            <span class="mi-kj">語</span>
+            <span class="mi-label fr">Phrases japonaises</span><span class="mi-label en">Japanese phrases</span>
+          </button>
+          <button class="more-menu-item" data-more="settings">
+            <span class="mi-kj">設</span>
+            <span class="mi-label fr">Réglages &amp; sauvegarde</span><span class="mi-label en">Settings &amp; backup</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="sub-panel" id="more-daybyday">
+        <div class="back-row"><button class="back-btn" data-back="more">‹ <span class="fr">Retour</span><span class="en">Back</span></button></div>
+        <div class="section-label fr">Programme jour par jour</div>
+        <div class="section-label en">Day-by-day schedule</div>
+        <p class="hero-note fr">Météo croisée (tenki.jp) au 4 septembre. Fiable à court terme, indicative au-delà de 10 jours, absente au-delà de 13 jours.</p>
+        <p class="hero-note en">Weather cross-checked (tenki.jp) as of Sept 4. Reliable short-term, indicative beyond 10 days, unavailable beyond 13 days.</p>
+        <div id="dbdList"></div>
+      </div>
+
+      <div class="sub-panel" id="more-phrases">
+        <div class="back-row"><button class="back-btn" data-back="more">‹ <span class="fr">Retour</span><span class="en">Back</span></button></div>
+        <div class="section-label fr">Phrases japonaises</div>
+        <div class="section-label en">Japanese phrases</div>
+        <p class="hero-note fr">Structure prête — le contenu définitif (cacherout, Chabbat, politesse) arrive dans un second temps.</p>
+        <p class="hero-note en">Structure ready — final content (kashrut, Shabbat, courtesy) is coming in a follow-up pass.</p>
+        <div id="phrasesList"></div>
+      </div>
+
+      <div class="sub-panel" id="more-settings">
+        <div class="back-row"><button class="back-btn" data-back="more">‹ <span class="fr">Retour</span><span class="en">Back</span></button></div>
+        <div class="section-label fr">Sauvegarde</div>
+        <div class="section-label en">Backup</div>
+        <p class="hero-note fr">Toutes tes données ajoutées (checklist, dépenses, activités) vivent uniquement sur ce téléphone. Exporte régulièrement pour ne rien perdre si Safari vide le cache.</p>
+        <p class="hero-note en">Everything you add (checklist, expenses, activities) lives only on this phone. Export regularly so nothing is lost if Safari clears its cache.</p>
+        <div style="display:flex; flex-direction:column; gap:10px; margin-top:14px;">
+          <button class="btn-primary" id="exportBtn"><span class="fr">Exporter (JSON)</span><span class="en">Export (JSON)</span></button>
+          <button class="btn-secondary" id="importBtn"><span class="fr">Importer un fichier</span><span class="en">Import a file</span></button>
+          <input type="file" id="importFile" accept="application/json" style="display:none;">
+          <button class="btn-secondary btn-danger" id="resetBtn"><span class="fr">Réinitialiser mes données</span><span class="en">Reset my data</span></button>
+        </div>
+
+        <div class="section-label fr">À propos</div>
+        <div class="section-label en">About</div>
+        <p class="hero-note fr">Fonctionne hors-ligne · installable sur l'écran d'accueil · aucune dépendance externe · aucune donnée envoyée où que ce soit.</p>
+        <p class="hero-note en">Works offline · installable to the home screen · no external dependencies · no data sent anywhere.</p>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<nav class="bottom-nav" id="bottomNav"></nav>
+
+<div class="modal-backdrop" id="expenseModalBackdrop">
+  <div class="modal-sheet">
+    <h3><span class="fr">Nouvelle dépense</span><span class="en">New expense</span></h3>
+    <form id="expenseForm">
+      <div class="form-row">
+        <label class="fr">Montant</label><label class="en">Amount</label>
+        <input type="number" step="0.01" min="0" id="expAmount" required inputmode="decimal">
+      </div>
+      <div class="form-row">
+        <label class="fr">Devise</label><label class="en">Currency</label>
+        <select id="expCurrency">
+          <option value="JPY">JPY (¥)</option>
+          <option value="USD">USD ($)</option>
+          <option value="KRW">KRW (₩)</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="fr">Catégorie</label><label class="en">Category</label>
+        <select id="expCategory">
+          <option value="Transport">Transport</option>
+          <option value="Repas">Repas / Meals</option>
+          <option value="Activités">Activités / Activities</option>
+          <option value="Shopping">Shopping</option>
+          <option value="Autre">Autre / Other</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="fr">Ville</label><label class="en">City</label>
+        <select id="expCity">
+          <option value="Sapporo">Sapporo</option>
+          <option value="Asahikawa">Asahikawa</option>
+          <option value="Osaka">Osaka</option>
+          <option value="Kyoto">Kyoto</option>
+          <option value="Shirahama">Shirahama</option>
+          <option value="Tokyo">Tokyo</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="fr">Date</label><label class="en">Date</label>
+        <input type="date" id="expDate" min="2026-09-06" max="2026-09-20">
+      </div>
+      <div class="form-row">
+        <label class="fr">Note</label><label class="en">Note</label>
+        <input type="text" id="expNote" maxlength="80" placeholder="…">
+      </div>
+      <div class="form-row check">
+        <input type="checkbox" id="expOutOfBudget">
+        <label for="expOutOfBudget"><span class="fr">Hors budget (ex : montre, appareil photo)</span><span class="en">Outside budget (e.g. watch, camera)</span></label>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" id="expenseCancelBtn"><span class="fr">Annuler</span><span class="en">Cancel</span></button>
+        <button type="submit" class="btn-primary"><span class="fr">Ajouter</span><span class="en">Add</span></button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
