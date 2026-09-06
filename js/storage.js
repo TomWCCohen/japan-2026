@@ -11,6 +11,8 @@ const STORAGE_KEYS = {
   notes: STORAGE_PREFIX + "notes",                // { [isoDate]: "free text" }
   expenses: STORAGE_PREFIX + "expenses",          // [ {id, amount, currency, category, city, date, note, outOfBudget} ]
   activitiesAdded: STORAGE_PREFIX + "activitiesAdded", // [ {id, activityId, cityId, titleFr, titleEn, addedAt} ]
+  transport: STORAGE_PREFIX + "transport",        // [ {id, kind, route, date, depTime, arrTime, name, seat, priceAmount, priceCurrency, confirmation, note} ]
+  priceOverrides: STORAGE_PREFIX + "priceOverrides", // { [itemId]: {amount, currency} }
   lang: STORAGE_PREFIX + "lang",
   seeded: STORAGE_PREFIX + "seeded",
 };
@@ -49,9 +51,39 @@ function addExpense(expense){
   all.push(Object.assign({ id: "exp-" + Date.now() + "-" + Math.random().toString(36).slice(2,7) }, expense));
   saveJSON(STORAGE_KEYS.expenses, all);
 }
+function updateExpense(id, fields){
+  const all = getExpenses();
+  const idx = all.findIndex(e => e.id === id);
+  if(idx === -1) return;
+  all[idx] = Object.assign({}, all[idx], fields);
+  saveJSON(STORAGE_KEYS.expenses, all);
+}
 function deleteExpense(id){
   const all = getExpenses().filter(e => e.id !== id);
   saveJSON(STORAGE_KEYS.expenses, all);
+}
+
+function getUserTransport(){ return loadJSON(STORAGE_KEYS.transport, []); }
+function addUserTransport(entry){
+  const all = getUserTransport();
+  all.push(Object.assign({ id: "tr-user-" + Date.now() + "-" + Math.random().toString(36).slice(2,7) }, entry));
+  saveJSON(STORAGE_KEYS.transport, all);
+}
+function deleteUserTransport(id){
+  const all = getUserTransport().filter(t => t.id !== id);
+  saveJSON(STORAGE_KEYS.transport, all);
+}
+
+function getPriceOverrides(){ return loadJSON(STORAGE_KEYS.priceOverrides, {}); }
+function setPriceOverride(itemId, amount, currency){
+  const all = getPriceOverrides();
+  all[itemId] = { amount, currency };
+  saveJSON(STORAGE_KEYS.priceOverrides, all);
+}
+function clearPriceOverride(itemId){
+  const all = getPriceOverrides();
+  delete all[itemId];
+  saveJSON(STORAGE_KEYS.priceOverrides, all);
 }
 
 function getActivitiesAdded(){ return loadJSON(STORAGE_KEYS.activitiesAdded, []); }

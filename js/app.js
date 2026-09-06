@@ -268,6 +268,62 @@ function addressActionsHTML(h, extraButtonHTML){
   </div>`;
 }
 
+/* ============ Price overrides (editable price on any static item) ============ */
+function formatMoney(amount, currency){
+  const symbol = currency === "JPY" ? "¥" : currency === "USD" ? "$" : currency === "KRW" ? "₩" : "";
+  const formatted = currency === "USD" ? Number(amount).toFixed(2) : Math.round(amount).toLocaleString();
+  return `${symbol}${formatted}`;
+}
+function effectivePrice(itemId, amount, currency){
+  const override = getPriceOverrides()[itemId];
+  return override || { amount, currency };
+}
+function priceRowHTML(itemId, item){
+  const override = getPriceOverrides()[itemId];
+  const eff = effectivePrice(itemId, item.priceAmount, item.priceCurrency);
+  const display = override ? formatMoney(eff.amount, eff.currency) : (item.price || formatMoney(eff.amount, eff.currency));
+  return `<div class="wc-row">
+    <div class="k">Prix${override? ' <span class="price-edited-tag">modifié</span>' : ''}</div>
+    <div class="v price-v">${display} <button class="price-edit-btn" data-edit-price="${itemId}" data-orig-amount="${item.priceAmount}" data-orig-currency="${item.priceCurrency}">✎</button></div>
+  </div>`;
+}
+function wirePriceEditButtons(){
+  $$("[data-edit-price]").forEach(btn=>{
+    btn.onclick = () => openPriceEdit(btn.dataset.editPrice, parseFloat(btn.dataset.origAmount)||0, btn.dataset.origCurrency||"JPY");
+  });
+}
+let editingPriceItemId = null;
+function openPriceEdit(itemId, origAmount, origCurrency){
+  editingPriceItemId = itemId;
+  const current = getPriceOverrides()[itemId] || { amount: origAmount, currency: origCurrency };
+  $("#priceAmount").value = current.amount;
+  $("#priceCurrency").value = current.currency;
+  $("#priceModalBackdrop").classList.add("open");
+}
+function wirePriceModal(){
+  const backdrop = $("#priceModalBackdrop");
+  $("#priceCancelBtn").onclick = () => backdrop.classList.remove("open");
+  backdrop.onclick = (e) => { if(e.target === backdrop) backdrop.classList.remove("open"); };
+  $("#priceResetBtn").onclick = () => {
+    if(editingPriceItemId) clearPriceOverride(editingPriceItemId);
+    backdrop.classList.remove("open");
+    refreshAfterPriceChange();
+  };
+  $("#priceForm").onsubmit = (e) => {
+    e.preventDefault();
+    if(editingPriceItemId){
+      setPriceOverride(editingPriceItemId, parseFloat($("#priceAmount").value) || 0, $("#priceCurrency").value);
+    }
+    backdrop.classList.remove("open");
+    refreshAfterPriceChange();
+  };
+}
+function refreshAfterPriceChange(){
+  renderBookings();
+  renderBudget();
+  renderToday();
+}
+
 function hotelCard(h){
   return `<div class="wallet-card type-hotel" id="wc-hotel-${h.stageId}">
     <div class="wc-top">
@@ -285,7 +341,7 @@ function hotelCard(h){
       <div class="wc-row"><div class="k">Téléphone</div><div class="v"><a href="${telUrl(h.phone)}">${h.phone}</a></div></div>
       <div class="wc-row"><div class="k">N° confirmation</div><div class="v">${h.confirmation}</div></div>
       ${h.pin? `<div class="wc-row"><div class="k">PIN</div><div class="v">${h.pin}</div></div>`:''}
-      <div class="wc-row"><div class="k">Prix</div><div class="v">${h.price}</div></div>
+      ${priceRowHTML(h.stageId, h)}
       ${h.note? `<div class="wc-note">${h.note}</div>`:''}
       ${addressActionsHTML(h)}
     </div>
@@ -320,7 +376,7 @@ function flightCard(f){
       <div class="wc-row"><div class="k">Passager</div><div class="v">${f.passenger}</div></div>
       <div class="wc-row"><div class="k">Confirmation</div><div class="v">${f.confirmation}</div></div>
       ${f.ticket? `<div class="wc-row"><div class="k">N° billet</div><div class="v">${f.ticket}</div></div>`:''}
-      <div class="wc-row"><div class="k">Prix</div><div class="v">${f.price}</div></div>
+      ${priceRowHTML(f.id, f)}
       ${f.note? `<div class="wc-note ${f.note.indexOf('⚠')>=0?'warn':''}">${f.note}</div>`:''}
       <div class="wc-actions">
         <button class="wc-btn" data-copy-text="${flightInfoText(f).replace(/"/g,'&quot;')}">Copier infos vol</button>
@@ -330,6 +386,103 @@ function flightCard(f){
   </div>`;
 }
 
+/* ============ TRAINS / BUS (static + user-added, merged) ============ */
+function formatDateLabelFR(iso){
+  const d = new Date(iso+"T00:00:00");
+  const days = ["DIM","LUN","MAR","MER","JEU","VEN","SAM"];
+  const months = ["janv","févr","mars","avr","mai","juin","juil","août","sept","oct","nov","déc"];
+  return `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`;
+}
+function getAllTrains(){
+  return TRAINS.concat(getUserTransport()).slice().sort((a,b)=> a.date < b.date ? -1 : (a.date > b.date ? 1 : 0));
+}
+function trainInfoText(t){
+  return `${t.route} — ${t.dateLabel || formatDateLabelFR(t.date)}\n${t.depTime||''} → ${t.arrTime||''}${t.name? '\n'+t.name : ''}${t.confirmation? '\nConfirmation: '+t.confirmation : ''}`;
+}
+function trainCard(t){
+  const isUser = String(t.id).startsWith("tr-user-");
+  return `<div class="wallet-card type-train" id="wc-train-${t.id}">
+    <div class="wc-top">
+      <div class="wc-kanji">${t.kanji || (t.kind==='bus' ? '🚌' : '🚃')}</div>
+      <div class="wc-icon">${t.kind==='bus' ? 'Bus' : 'Train'}</div>
+      <div class="wc-title">${t.route}</div>
+      <div class="wc-subtitle">${t.dateLabel || formatDateLabelFR(t.date)} · ${t.depTime||''}${t.arrTime? ' → '+t.arrTime : ''}</div>
+    </div>
+    <div class="wc-tear"></div>
+    <div class="wc-body">
+      ${t.name? `<div class="wc-row"><div class="k">Nom / n°</div><div class="v">${t.name}</div></div>`:''}
+      ${t.seat? `<div class="wc-row"><div class="k">Place</div><div class="v">${t.seat}</div></div>`:''}
+      ${t.passenger? `<div class="wc-row"><div class="k">Passager</div><div class="v">${t.passenger}</div></div>`:''}
+      ${t.confirmation? `<div class="wc-row"><div class="k">Confirmation</div><div class="v">${t.confirmation}</div></div>`:''}
+      ${t.pickupCode? `<div class="wc-row"><div class="k">Code retrait</div><div class="v">${t.pickupCode}</div></div>`:''}
+      ${priceRowHTML(t.id, t)}
+      ${t.note? `<div class="wc-note">${t.note}</div>`:''}
+      <div class="wc-actions">
+        <button class="wc-btn" data-copy-text="${trainInfoText(t).replace(/"/g,'&quot;')}">Copier infos</button>
+        ${isUser? `<button class="wc-btn btn-danger" data-delete-transport="${t.id}">Supprimer</button>` : ''}
+      </div>
+    </div>
+  </div>`;
+}
+function trainMiniCardHTML(t){
+  return `<div class="wallet-card type-train">
+    <div class="wc-top">
+      <div class="wc-kanji">${t.kanji || (t.kind==='bus' ? '🚌' : '🚃')}</div>
+      <div class="wc-icon">${t.kind==='bus' ? 'Bus aujourd’hui' : 'Train aujourd’hui'}</div>
+      <div class="wc-title">${t.route}</div>
+      <div class="wc-subtitle">${t.depTime||''}${t.arrTime? ' → '+t.arrTime : ''}${t.name? ' · '+t.name : ''}</div>
+    </div>
+    <div class="wc-tear"></div>
+    <div class="wc-body">
+      <div class="wc-actions">
+        <button class="wc-btn" data-copy-text="${trainInfoText(t).replace(/"/g,'&quot;')}">Copier infos</button>
+        <button class="wc-btn" data-goto-train="${t.id}">Voir la réservation</button>
+      </div>
+    </div>
+  </div>`;
+}
+function wireDeleteTransportButtons(){
+  $$("[data-delete-transport]").forEach(btn=>{
+    btn.onclick = () => {
+      if(confirm("Supprimer ce trajet ?")){
+        deleteUserTransport(btn.dataset.deleteTransport);
+        renderBookings();
+        renderToday();
+        renderBudget();
+      }
+    };
+  });
+}
+function wireAddTransportModal(){
+  const backdrop = $("#transportModalBackdrop");
+  $("#addTransportBtn").onclick = () => backdrop.classList.add("open");
+  $("#transportCancelBtn").onclick = () => backdrop.classList.remove("open");
+  backdrop.onclick = (e) => { if(e.target === backdrop) backdrop.classList.remove("open"); };
+  $("#transportForm").onsubmit = (e) => {
+    e.preventDefault();
+    const dep = $("#trDep").value.trim();
+    const arr = $("#trArr").value.trim();
+    addUserTransport({
+      kind: $("#trKind").value,
+      route: `${dep} → ${arr}`,
+      depStation: dep, arrStation: arr,
+      date: $("#trDate").value,
+      depTime: $("#trDepTime").value,
+      arrTime: $("#trArrTime").value,
+      name: $("#trName").value.trim(),
+      priceAmount: parseFloat($("#trAmount").value) || 0,
+      priceCurrency: $("#trCurrency").value,
+      confirmation: $("#trConfirmation").value.trim(),
+      note: $("#trNote").value.trim(),
+    });
+    e.target.reset();
+    backdrop.classList.remove("open");
+    renderBookings();
+    renderToday();
+    renderBudget();
+  };
+}
+
 let currentFilter = "all";
 function buildFilters(){
   const row = $("#filterRow");
@@ -337,7 +490,7 @@ function buildFilters(){
     {id:'all', label:'Tout'},
     {id:'hotel', label:'Hôtels'},
     {id:'flight', label:'Vols'},
-    {id:'train', label:'Trains'},
+    {id:'train', label:'Trains/bus'},
   ];
   filters.forEach(f=>{
     const btn = document.createElement('button');
@@ -354,13 +507,18 @@ function renderBookings(){
   let html = '';
   if(currentFilter==='all' || currentFilter==='hotel'){ HOTELS.forEach(h=> html += hotelCard(h)); }
   if(currentFilter==='all' || currentFilter==='flight'){ FLIGHTS.forEach(f=> html += flightCard(f)); }
-  if(currentFilter==='train'){
-    if(TRAINS.length===0){
-      html += `<div class="wc-empty">Pas encore réservé — les trains internes arrivent bientôt.</div>`;
+  if(currentFilter==='all' || currentFilter==='train'){
+    const trains = getAllTrains();
+    if(trains.length===0 && currentFilter==='train'){
+      html += `<div class="wc-empty">Pas encore de train/bus ajouté.</div>`;
+    } else {
+      trains.forEach(t=> html += trainCard(t));
     }
   }
   list.innerHTML = html;
   wireCopyButtons();
+  wirePriceEditButtons();
+  wireDeleteTransportButtons();
 }
 function wireCopyButtons(){
   $$("[data-copy-text]").forEach(btn=>{
@@ -374,7 +532,8 @@ function gotoWalletCard(type, key){
   $$('.filter-btn').forEach(b=>b.classList.toggle('active', b.dataset.filter==='all'));
   renderBookings();
   setTimeout(()=>{
-    const el = document.getElementById(type==='hotel' ? 'wc-hotel-'+key : 'wc-flight-'+key);
+    const prefix = type==='hotel' ? 'wc-hotel-' : type==='train' ? 'wc-train-' : 'wc-flight-';
+    const el = document.getElementById(prefix+key);
     if(el){
       el.scrollIntoView({behavior:'smooth', block:'start'});
       el.classList.add('flash');
@@ -383,19 +542,24 @@ function gotoWalletCard(type, key){
   }, 60);
 }
 
-/* ============ BUDGET (interactive) ============ */
-const BUDGET_FIXED = {
-  hotelsUSD: Math.round((10619+20495+9090+44736+10505+72270)/JPY_PER_USD),
-  flightsUSD: Math.round(488.97+144.00+323.70),
-};
+/* ============ BUDGET (interactive, prices computed live incl. overrides) ============ */
 function toUSD(amount, currency){
   if(currency === "USD") return amount;
   if(currency === "JPY") return amount / JPY_PER_USD;
   if(currency === "KRW") return amount / KRW_PER_USD;
   return amount;
 }
+function itemUSD(itemId, item){
+  const eff = effectivePrice(itemId, item.priceAmount, item.priceCurrency);
+  return toUSD(eff.amount, eff.currency);
+}
+let budgetAggMode = "category";
 function renderBudget(){
-  const committed = BUDGET_FIXED.hotelsUSD + BUDGET_FIXED.flightsUSD;
+  const hotelsUSD = HOTELS.reduce((sum,h)=> sum + itemUSD(h.stageId, h), 0);
+  const flightsUSD = FLIGHTS.filter(f=>f.countsTowardBudget!==false).reduce((sum,f)=> sum + itemUSD(f.id, f), 0);
+  const trainsUSD = getAllTrains().filter(t=>t.countsTowardBudget!==false).reduce((sum,t)=> sum + itemUSD(t.id, t), 0);
+  const committed = hotelsUSD + flightsUSD + trainsUSD;
+
   const expenses = getExpenses();
   const inBudget = expenses.filter(e => !e.outOfBudget);
   const outBudget = expenses.filter(e => e.outOfBudget);
@@ -416,8 +580,9 @@ function renderBudget(){
   `;
 
   const rows = [
-    {label:"Hôtels (6)", amt:BUDGET_FIXED.hotelsUSD},
-    {label:"Vols personnels (4)", amt:BUDGET_FIXED.flightsUSD},
+    {label:"Hôtels (6)", amt:hotelsUSD},
+    {label:"Vols personnels", amt:flightsUSD},
+    {label:"Trains / bus", amt:trainsUSD},
     {label:"Dépenses ajoutées", amt:spentDuringTrip},
   ];
   const wrap = $("#budgetBreakdown");
@@ -434,6 +599,8 @@ function renderBudget(){
       <div class="b-amt">$${Math.round(outOfBudgetTotal).toLocaleString()}</div>
     </div>`;
 
+  renderBudgetAggregation();
+
   const list = $("#expenseList");
   if(expenses.length === 0){
     list.innerHTML = `<div class="wc-empty">Aucune dépense ajoutée.</div>`;
@@ -446,6 +613,7 @@ function renderBudget(){
           <div class="ei-meta">${e.category} · ${e.city}${e.date? ' · '+e.date : ''}</div>
         </div>
         <div class="ei-amt">$${usd.toFixed(0)}<div class="ei-meta">${Number(e.amount)||0} ${e.currency}</div></div>
+        <button class="ei-edit" data-edit-expense="${e.id}">✎</button>
         <button class="ei-del" data-del-expense="${e.id}">×</button>
       </div>`;
     }).join('');
@@ -453,19 +621,68 @@ function renderBudget(){
   $$("[data-del-expense]").forEach(btn=>{
     btn.onclick = () => { deleteExpense(btn.dataset.delExpense); renderBudget(); };
   });
+  $$("[data-edit-expense]").forEach(btn=>{
+    btn.onclick = () => openExpenseModal(getExpenses().find(e => e.id === btn.dataset.editExpense));
+  });
 }
 
+function renderBudgetAggregation(){
+  const container = $("#budgetAggregation");
+  if(!container) return;
+  const expenses = getExpenses().filter(e => !e.outOfBudget && (Number(e.amount)||0) > 0);
+  if(expenses.length === 0){
+    container.innerHTML = `<div class="wc-empty">Ajoute des dépenses pour voir la répartition.</div>`;
+    return;
+  }
+  const groups = {};
+  expenses.forEach(e=>{
+    const key = budgetAggMode === "day" ? (e.date || "Sans date") : (e.category || "Autre");
+    groups[key] = (groups[key]||0) + toUSD(Number(e.amount)||0, e.currency);
+  });
+  let entries = Object.entries(groups);
+  entries = budgetAggMode === "day" ? entries.sort((a,b)=> a[0] < b[0] ? -1 : 1) : entries.sort((a,b)=> b[1]-a[1]);
+  const max = Math.max(...entries.map(e=>e[1]), 1);
+  container.innerHTML = entries.map(([label,amt])=>{
+    const w = Math.max(3, Math.round(amt/max*100));
+    return `<div class="budget-row">
+      <div class="b-label">${label}</div>
+      <div class="b-bar"><div class="b-fill" style="width:${w}%;"></div></div>
+      <div class="b-amt">$${Math.round(amt).toLocaleString()}</div>
+    </div>`;
+  }).join('');
+}
+function wireBudgetAggToggle(){
+  $$(".agg-toggle-btn").forEach(btn=>{
+    btn.onclick = () => {
+      budgetAggMode = btn.dataset.agg;
+      $$(".agg-toggle-btn").forEach(b=>b.classList.toggle("active", b.dataset.agg===budgetAggMode));
+      renderBudgetAggregation();
+    };
+  });
+}
+
+let editingExpenseId = null;
+function openExpenseModal(expense){
+  editingExpenseId = expense ? expense.id : null;
+  $("#expenseModalTitle").textContent = expense ? "Modifier la dépense" : "Nouvelle dépense";
+  $("#expenseSubmitBtn").textContent = expense ? "Enregistrer" : "Ajouter";
+  $("#expAmount").value = expense ? expense.amount : "";
+  $("#expCurrency").value = expense ? expense.currency : "JPY";
+  $("#expCategory").value = expense ? expense.category : "Transport";
+  $("#expCity").value = expense ? expense.city : "Sapporo";
+  $("#expDate").value = expense ? expense.date : "";
+  $("#expNote").value = expense ? expense.note : "";
+  $("#expOutOfBudget").checked = expense ? !!expense.outOfBudget : false;
+  $("#expenseModalBackdrop").classList.add("open");
+}
 function wireExpenseModal(){
   const backdrop = $("#expenseModalBackdrop");
-  const openBtn = $("#addExpenseBtn");
-  const cancelBtn = $("#expenseCancelBtn");
-  const form = $("#expenseForm");
-  openBtn.onclick = () => backdrop.classList.add("open");
-  cancelBtn.onclick = () => backdrop.classList.remove("open");
+  $("#addExpenseBtn").onclick = () => openExpenseModal(null);
+  $("#expenseCancelBtn").onclick = () => backdrop.classList.remove("open");
   backdrop.onclick = (e) => { if(e.target === backdrop) backdrop.classList.remove("open"); };
-  form.onsubmit = (e) => {
+  $("#expenseForm").onsubmit = (e) => {
     e.preventDefault();
-    addExpense({
+    const fields = {
       amount: parseFloat($("#expAmount").value) || 0,
       currency: $("#expCurrency").value,
       category: $("#expCategory").value,
@@ -473,8 +690,10 @@ function wireExpenseModal(){
       date: $("#expDate").value,
       note: $("#expNote").value.trim(),
       outOfBudget: $("#expOutOfBudget").checked,
-    });
-    form.reset();
+    };
+    if(editingExpenseId){ updateExpense(editingExpenseId, fields); }
+    else { addExpense(fields); }
+    e.target.reset();
     backdrop.classList.remove("open");
     renderBudget();
   };
@@ -596,6 +815,7 @@ function renderDayCards(iso, container){
   const dayEntries = [];
   STAGES.forEach(s => s.days.forEach(d => { if(d.dates.includes(iso)) dayEntries.push({...d, stage:s}); }));
   const todaysFlights = FLIGHTS.filter(f => f.date === iso);
+  const todaysTrains = getAllTrains().filter(t => t.date === iso);
   const weather = dayEntries.find(d => d.weather && d.weather.type !== "unavailable")?.weather || dayEntries[0]?.weather;
   const headerLabel = dayEntries[0] ? dayEntries[0].d : iso;
   const isArrivalDay = !!(hotel && hotel.checkinDate === iso);
@@ -606,18 +826,18 @@ function renderDayCards(iso, container){
     ${weatherHTML(weather)}
   </div>`;
 
-  const flightCardsHTML = todaysFlights.map(f => flightMiniCardHTML(f)).join('');
+  const transportCardsHTML = todaysFlights.map(f => flightMiniCardHTML(f)).join('') + todaysTrains.map(t => trainMiniCardHTML(t)).join('');
   const hotelCardHTML = hotel ? hotelMiniCardHTML(hotel) : '';
-  const transportCardHTML = (!todaysFlights.length && stage && stage.days[0].dates.includes(iso) && stage.transport)
+  const fallbackTransportHTML = (!todaysFlights.length && !todaysTrains.length && stage && stage.days[0].dates.includes(iso) && stage.transport)
     ? `<div class="today-card"><div class="tc-label">Transport aujourd'hui</div><div class="tc-title">${stage.transport}</div></div>`
     : '';
 
   if(isArrivalDay){
-    html += flightCardsHTML || transportCardHTML;
+    html += transportCardsHTML || fallbackTransportHTML;
     html += hotelCardHTML;
   } else {
     html += hotelCardHTML;
-    html += flightCardsHTML || transportCardHTML;
+    html += transportCardsHTML || fallbackTransportHTML;
   }
 
   if(dayEntries.length){
@@ -654,6 +874,7 @@ function renderDayCards(iso, container){
   wireCopyButtons();
   wireActivityAddButtons();
   wireRemoveButtons();
+  wirePriceEditButtons();
   $$("[data-checklist-item]", container).forEach(cb=>{
     cb.onchange = () => {
       setChecklistItem(cb.dataset.checklistDate, cb.dataset.checklistItem, cb.checked);
@@ -664,6 +885,9 @@ function renderDayCards(iso, container){
   if(gotoHotelBtn) gotoHotelBtn.onclick = () => gotoWalletCard('hotel', gotoHotelBtn.dataset.gotoHotel);
   $$("[data-goto-flight]", container).forEach(btn=>{
     btn.onclick = () => gotoWalletCard('flight', btn.dataset.gotoFlight);
+  });
+  $$("[data-goto-train]", container).forEach(btn=>{
+    btn.onclick = () => gotoWalletCard('train', btn.dataset.gotoTrain);
   });
 }
 
@@ -719,6 +943,9 @@ function init(){
   wirePhraseSearch();
   buildMore();
   wireExpenseModal();
+  wirePriceModal();
+  wireAddTransportModal();
+  wireBudgetAggToggle();
   renderBudget();
   renderToday();
 
