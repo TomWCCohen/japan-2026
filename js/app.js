@@ -643,9 +643,11 @@ function dailyAverageCardHTML(label, category, target){
     return `<div class="avg-card"><div class="avg-label">${label}</div><div class="avg-value avg-empty">Pas encore de données</div></div>`;
   }
   const over = result.avg > target;
+  const jpy = Math.round(result.avg * JPY_PER_USD);
   return `<div class="avg-card ${over?'over':''}">
     <div class="avg-label">${label}</div>
     <div class="avg-value">$${result.avg.toFixed(1)}<span class="avg-unit">/ jour</span></div>
+    <div class="avg-jpy">≈ ¥${jpy.toLocaleString()} / jour</div>
     <div class="avg-target">cible $${target} · sur ${result.days} jour${result.days>1?'s':''} noté${result.days>1?'s':''}</div>
   </div>`;
 }

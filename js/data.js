@@ -232,7 +232,7 @@ const TRAINS = [
 const JPY_PER_USD = 160;
 const KRW_PER_USD = 1350;
 const BUDGET_TARGET = 3000;
-const FOOD_DAILY_TARGET = 29;        // USD — cible repas/jour, sur les jours où il y a des dépenses repas
+const FOOD_DAILY_TARGET = 30;         // USD — cible repas/jour, sur les jours où il y a des dépenses repas
 const TRANSPORT_DAILY_TARGET = 20;   // USD — cible transport/jour, sur les jours où il y a des dépenses transport
 const DAILY_TOTAL_ALERT = 70;        // USD — au-delà, la journée est signalée en rouge dans "Par jour"
 
