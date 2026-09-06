@@ -1000,7 +1000,18 @@ function openDayDetail(iso){
 function registerServiceWorker(){
   if("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")){
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("service-worker.js").catch(err => console.warn("SW registration failed", err));
+      navigator.serviceWorker.register("service-worker.js").then(reg => {
+        // Browsers only auto-check for a new SW once per ~24h; force a check on
+        // every launch so same-day pushes actually reach the phone.
+        reg.update().catch(()=>{});
+      }).catch(err => console.warn("SW registration failed", err));
+
+      let reloadedOnce = false;
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        if(reloadedOnce) return;
+        reloadedOnce = true;
+        window.location.reload();
+      });
     });
   }
 }
