@@ -1,6 +1,6 @@
 /* Minimal app-shell service worker.
    Bump CACHE_NAME on every deploy so old clients pick up the new shell. */
-const CACHE_NAME = "japon2026-shell-v5";
+const CACHE_NAME = "japon2026-shell-v6";
 const APP_SHELL = [
   "./",
   "./index.html",

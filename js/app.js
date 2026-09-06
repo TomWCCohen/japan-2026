@@ -599,6 +599,7 @@ function renderBudget(){
       <div class="b-amt">$${Math.round(outOfBudgetTotal).toLocaleString()}</div>
     </div>`;
 
+  renderDailyAverages();
   renderBudgetAggregation();
 
   const list = $("#expenseList");
@@ -626,6 +627,59 @@ function renderBudget(){
   });
 }
 
+/* ============ Daily pace cards (Repas/jour, Transport/jour) ============ */
+function computeDailyAverageUSD(category){
+  const byDay = {};
+  getExpenses().filter(e => !e.outOfBudget && e.category === category && e.date && (Number(e.amount)||0) > 0)
+    .forEach(e=>{ byDay[e.date] = (byDay[e.date]||0) + toUSD(Number(e.amount)||0, e.currency); });
+  const days = Object.keys(byDay);
+  if(days.length === 0) return null;
+  const total = days.reduce((s,d)=> s + byDay[d], 0);
+  return { avg: total/days.length, days: days.length };
+}
+function dailyAverageCardHTML(label, category, target){
+  const result = computeDailyAverageUSD(category);
+  if(!result){
+    return `<div class="avg-card"><div class="avg-label">${label}</div><div class="avg-value avg-empty">Pas encore de données</div></div>`;
+  }
+  const over = result.avg > target;
+  return `<div class="avg-card ${over?'over':''}">
+    <div class="avg-label">${label}</div>
+    <div class="avg-value">$${result.avg.toFixed(1)}<span class="avg-unit">/ jour</span></div>
+    <div class="avg-target">cible $${target} · sur ${result.days} jour${result.days>1?'s':''} noté${result.days>1?'s':''}</div>
+  </div>`;
+}
+function renderDailyAverages(){
+  const container = $("#dailyAverages");
+  if(!container) return;
+  container.innerHTML = dailyAverageCardHTML("Repas / jour", "Repas", FOOD_DAILY_TARGET)
+    + dailyAverageCardHTML("Transport / jour", "Transport", TRANSPORT_DAILY_TARGET);
+}
+
+/* ============ Category / day aggregation, with per-day expand ============ */
+const EXPENSE_CATEGORIES = ["Repas","Transport","Activités","Shopping","Autre"];
+function dayExpenseDetailHTML(date){
+  const dayExpenses = getExpenses().filter(e => e.date === date && !e.outOfBudget);
+  const catTotals = {};
+  dayExpenses.forEach(e=>{
+    const cat = e.category || "Autre";
+    catTotals[cat] = (catTotals[cat]||0) + toUSD(Number(e.amount)||0, e.currency);
+  });
+  const maxCat = Math.max(...Object.values(catTotals), 1);
+  const catRows = EXPENSE_CATEGORIES.filter(c => catTotals[c]).map(cat=>{
+    const w = Math.max(4, Math.round(catTotals[cat]/maxCat*100));
+    return `<div class="mini-cat-row">
+      <span class="mini-cat-label">${cat}</span>
+      <div class="mini-cat-bar"><div class="mini-cat-fill" style="width:${w}%;"></div></div>
+      <span class="mini-cat-amt">$${Math.round(catTotals[cat])}</span>
+    </div>`;
+  }).join('');
+  const itemRows = dayExpenses.map(e=>`<div class="mini-expense-row">
+    <span class="mini-expense-note">${e.note || e.category}</span>
+    <span class="mini-expense-amt">${Number(e.amount)||0} ${e.currency}</span>
+  </div>`).join('');
+  return `<div class="day-detail-inner">${catRows}${itemRows}</div>`;
+}
 function renderBudgetAggregation(){
   const container = $("#budgetAggregation");
   if(!container) return;
@@ -642,14 +696,35 @@ function renderBudgetAggregation(){
   let entries = Object.entries(groups);
   entries = budgetAggMode === "day" ? entries.sort((a,b)=> a[0] < b[0] ? -1 : 1) : entries.sort((a,b)=> b[1]-a[1]);
   const max = Math.max(...entries.map(e=>e[1]), 1);
-  container.innerHTML = entries.map(([label,amt])=>{
-    const w = Math.max(3, Math.round(amt/max*100));
-    return `<div class="budget-row">
-      <div class="b-label">${label}</div>
-      <div class="b-bar"><div class="b-fill" style="width:${w}%;"></div></div>
-      <div class="b-amt">$${Math.round(amt).toLocaleString()}</div>
-    </div>`;
-  }).join('');
+
+  if(budgetAggMode === "day"){
+    container.innerHTML = entries.map(([date,amt])=>{
+      const w = Math.max(3, Math.round(amt/max*100));
+      const over = amt > DAILY_TOTAL_ALERT;
+      const label = date === "Sans date" ? date : formatDateLabelFR(date);
+      return `<div class="budget-row day-row ${over?'over':''}" data-day-toggle="${date}">
+        <div class="b-label">${label}${over?' <span class="day-alert">!</span>':''}</div>
+        <div class="b-bar"><div class="b-fill" style="width:${w}%;"></div></div>
+        <div class="b-amt">$${Math.round(amt).toLocaleString()}</div>
+      </div>
+      <div class="day-detail" id="day-detail-${date}" hidden>${date!=="Sans date" ? dayExpenseDetailHTML(date) : ''}</div>`;
+    }).join('');
+    $$(".day-row").forEach(row=>{
+      row.onclick = () => {
+        const detail = document.getElementById("day-detail-"+row.dataset.dayToggle);
+        if(detail) detail.hidden = !detail.hidden;
+      };
+    });
+  } else {
+    container.innerHTML = entries.map(([label,amt])=>{
+      const w = Math.max(3, Math.round(amt/max*100));
+      return `<div class="budget-row">
+        <div class="b-label">${label}</div>
+        <div class="b-bar"><div class="b-fill" style="width:${w}%;"></div></div>
+        <div class="b-amt">$${Math.round(amt).toLocaleString()}</div>
+      </div>`;
+    }).join('');
+  }
 }
 function wireBudgetAggToggle(){
   $$(".agg-toggle-btn").forEach(btn=>{
