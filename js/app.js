@@ -47,7 +47,7 @@ function programStepsHTML(bodyHtml){
   const blocks = bodyHtml.split(/<br\s*\/?>/i);
   const steps = [];
   blocks.forEach(block=>{
-    const parts = block.split(/(?<=[.!?])\s+(?=[A-ZÀ-ÖØ-Þ<🗻🗼🥾♨️])/);
+    const parts = block.split(/(?<=[.!?])\s+(?=[A-ZÀ-ÖØ-Þ<🗻🗼🥾♨️]|~?\d{1,2}h\d{2})/);
     parts.forEach(p=>{ const t = p.trim(); if(t) steps.push(t); });
   });
   return `<div class="program-steps">${steps.map(s=>`<p>${s}</p>`).join('')}</div>`;
@@ -134,11 +134,24 @@ function weatherHTML(w){
   if(w.type === "unavailable"){
     return `<div class="weather-unavailable">Hors de portée des prévisions fiables — à revérifier 5-7 jours avant.</div>`;
   }
+  const seg = (label, p) => `<div class="wp-seg">
+      <span class="wp-label">${label}</span>
+      <span class="wp-icon">${p.icon}</span>
+      <span class="wp-temp">${p.temp}°</span>
+      <span class="wp-precip">${p.precip}%</span>
+    </div>`;
+  const partsHTML = w.parts ? `<div class="weather-parts">
+      ${seg("Matin", w.parts.matin)}
+      ${seg("Déb. PM", w.parts.debutAprem)}
+      ${seg("Fin PM", w.parts.finAprem)}
+      ${seg("Soir", w.parts.soir)}
+    </div>` : '';
   return `<div class="weather-chip">
       <span class="w-emoji">${w.emoji||"☀︎"}</span><span class="w-hi">${w.tempHigh||""}</span><span>· ${w.precip}</span>
       ${w.conf ? `<span class="weather-confidence">fiab. ${w.conf}</span>`:''}
     </div>
-    <div class="hero-note" style="margin:4px 0 0;">${w.desc} (${w.temp})</div>`;
+    <div class="hero-note" style="margin:4px 0 0;">${w.desc} (${w.temp})</div>
+    ${partsHTML}`;
 }
 
 function buildDayByDay(){
@@ -325,15 +338,16 @@ function refreshAfterPriceChange(){
 }
 
 function hotelCard(h){
-  return `<div class="wallet-card type-hotel" id="wc-hotel-${h.stageId}">
+  return `<div class="wallet-card type-hotel ${h.cancelled?'cancelled':''}" id="wc-hotel-${h.id}">
     <div class="wc-top">
       <div class="wc-kanji">${h.kanji}</div>
-      <div class="wc-icon">HÔTEL</div>
+      <div class="wc-icon">HÔTEL${h.cancelled?' <span class="cancelled-badge">ANNULÉ</span>':''}</div>
       <div class="wc-title">${h.name}</div>
       <div class="wc-subtitle">${h.dateRange} · ${h.nights}</div>
     </div>
     <div class="wc-tear"></div>
     <div class="wc-body">
+      ${h.cancelled? `<div class="wc-note warn">${h.cancelledNote||'Réservation annulée.'}</div>`:''}
       <div class="wc-row"><div class="k">Arrivée</div><div class="v">${h.checkin}</div></div>
       <div class="wc-row"><div class="k">Départ</div><div class="v">${h.checkout}</div></div>
       <div class="wc-row"><div class="k">Chambre</div><div class="v">${h.room}</div></div>
@@ -341,7 +355,7 @@ function hotelCard(h){
       <div class="wc-row"><div class="k">Téléphone</div><div class="v"><a href="${telUrl(h.phone)}">${h.phone}</a></div></div>
       <div class="wc-row"><div class="k">N° confirmation</div><div class="v">${h.confirmation}</div></div>
       ${h.pin? `<div class="wc-row"><div class="k">PIN</div><div class="v">${h.pin}</div></div>`:''}
-      ${priceRowHTML(h.stageId, h)}
+      ${priceRowHTML(h.id, h)}
       ${h.note? `<div class="wc-note">${h.note}</div>`:''}
       ${addressActionsHTML(h)}
     </div>
@@ -555,7 +569,7 @@ function itemUSD(itemId, item){
 }
 let budgetAggMode = "category";
 function renderBudget(){
-  const hotelsUSD = HOTELS.reduce((sum,h)=> sum + itemUSD(h.stageId, h), 0);
+  const hotelsUSD = HOTELS.filter(h=>!h.cancelled).reduce((sum,h)=> sum + itemUSD(h.id, h), 0);
   const flightsUSD = FLIGHTS.filter(f=>f.countsTowardBudget!==false).reduce((sum,f)=> sum + itemUSD(f.id, f), 0);
   const trainsUSD = getAllTrains().filter(t=>t.countsTowardBudget!==false).reduce((sum,t)=> sum + itemUSD(t.id, t), 0);
   const committed = hotelsUSD + flightsUSD + trainsUSD;
@@ -579,8 +593,9 @@ function renderBudget(){
     <div class="budget-stat"><div class="bs-amt">$${Math.round(remaining).toLocaleString()}</div><div class="bs-label">Restant</div></div>
   `;
 
+  const activeHotelCount = HOTELS.filter(h=>!h.cancelled).length;
   const rows = [
-    {label:"Hôtels (6)", amt:hotelsUSD},
+    {label:`Hôtels (${activeHotelCount})`, amt:hotelsUSD},
     {label:"Vols personnels", amt:flightsUSD},
     {label:"Trains / bus", amt:trainsUSD},
     {label:"Dépenses ajoutées", amt:spentDuringTrip},
@@ -638,17 +653,17 @@ function computeDailyAverageUSD(category){
   return { avg: total/days.length, days: days.length };
 }
 function dailyAverageCardHTML(label, category, target){
+  const targetJPY = Math.round(target * JPY_PER_USD / 100) * 100;
+  const targetLine = `cible $${target} · ¥${targetJPY.toLocaleString()}`;
   const result = computeDailyAverageUSD(category);
   if(!result){
-    return `<div class="avg-card"><div class="avg-label">${label}</div><div class="avg-value avg-empty">Pas encore de données</div></div>`;
+    return `<div class="avg-card"><div class="avg-label">${label}</div><div class="avg-value avg-empty">Pas encore de données</div><div class="avg-target">${targetLine}</div></div>`;
   }
   const over = result.avg > target;
-  const jpy = Math.round(result.avg * JPY_PER_USD / 100) * 100;
   return `<div class="avg-card ${over?'over':''}">
     <div class="avg-label">${label}</div>
     <div class="avg-value">$${result.avg.toFixed(1)}<span class="avg-unit">/ jour</span></div>
-    <div class="avg-jpy">≈ ¥${jpy.toLocaleString()} / jour</div>
-    <div class="avg-target">cible $${target} · sur ${result.days} jour${result.days>1?'s':''} noté${result.days>1?'s':''}</div>
+    <div class="avg-target">${targetLine} · sur ${result.days} jour${result.days>1?'s':''} noté${result.days>1?'s':''}</div>
   </div>`;
 }
 function renderDailyAverages(){
@@ -847,7 +862,7 @@ const DEFAULT_CHECKLIST_ITEMS = [
 ];
 
 function findActiveHotel(iso){
-  const candidates = HOTELS.filter(h => h.checkinDate <= iso).sort((a,b)=> a.checkinDate < b.checkinDate ? -1 : 1);
+  const candidates = HOTELS.filter(h => !h.cancelled && h.checkinDate <= iso).sort((a,b)=> a.checkinDate < b.checkinDate ? -1 : 1);
   return candidates.length ? candidates[candidates.length-1] : null;
 }
 
@@ -862,7 +877,7 @@ function hotelMiniCardHTML(hotel){
     <div class="wc-tear"></div>
     <div class="wc-body">
       ${addressRowsHTML(hotel)}
-      ${addressActionsHTML(hotel, `<button class="wc-btn" data-goto-hotel="${hotel.stageId}">Voir la réservation</button>`)}
+      ${addressActionsHTML(hotel, `<button class="wc-btn" data-goto-hotel="${hotel.id}">Voir la réservation</button>`)}
     </div>
   </div>`;
 }

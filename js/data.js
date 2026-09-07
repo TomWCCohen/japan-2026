@@ -38,10 +38,10 @@ const STAGES = [
     days:[
       {d:"LUN 7 SEPT", dates:["2026-09-07"], body:"Départ tôt Sapporo → Asahikawa. Sac déposé à l'hôtel (2 nuits). Train vers <b>Biei</b> (~35-45 min), exploré à vélo électrique (pas de voiture) : Patchwork Road, routes agricoles, éventuellement Shikisai-no-Oka — sans chercher à tout cocher. Retour Asahikawa en fin d'après-midi, soirée autour de la gare/Sanroku.", flag:null,
        weather:{desc:"Ensoleillé puis nuageux", temp:"25°C / 12°C", emoji:"⛅︎", tempHigh:"25°", precip:"40%"}},
-      {d:"MAR 8 SEPT", dates:["2026-09-08"], body:"<b>Le grand jour : Asahidake.</b> Bus Asahikawa → Asahidake Onsen/Ropeway (~1h40-1h50). Ropeway jusqu'à ~1 600m, dans le paysage volcanique du Daisetsuzan. Rando décidée sur place selon conditions : boucle tranquille Sugatami (~1h30-2h) ou sommet ambitieux (2 291m, plusieurs heures de plus). Onsen avant le bus retour. Deuxième nuit à Asahikawa.", flag:"Décision rando sur place (visibilité/vent/terrain)",
-       weather:{desc:"Ensoleillé, quelques nuages", temp:"25°C / 15°C", emoji:"☀︎", tempHigh:"25°", precip:"40%"}},
+      {d:"MAR 8 SEPT", dates:["2026-09-08"], body:"<b>Le grand jour : Asahidake.</b> Bus Asahikawa → Asahidake Onsen/Ropeway (~1h40-1h50). Ropeway jusqu'à ~1 600m, dans le paysage volcanique du Daisetsuzan. Rando décidée sur place selon conditions : boucle tranquille Sugatami (~1h30-2h) ou sommet ambitieux (2 291m, plusieurs heures de plus). Onsen avant le bus retour. Deuxième nuit à Asahikawa.", flag:"Décision rando sur place (visibilité/vent/terrain) — risque d'averses en fin de journée, viser un retour avant 16h",
+       weather:{desc:"Nuageux, averses possibles surtout en fin de journée", temp:"26°C / 16°C", emoji:"⛅︎", tempHigh:"26°", precip:"50%", parts:{matin:{temp:20,precip:30,icon:"⛅︎"}, debutAprem:{temp:25,precip:40,icon:"⛅︎"}, finAprem:{temp:26,precip:45,icon:"⛅︎"}, soir:{temp:20,precip:50,icon:"🌧︎"}}}},
       {d:"MER 9 SEPT", dates:["2026-09-09"], body:"Matin volontairement léger : petit-déjeuner, courte balade, bagages. Puis aéroport d'Asahikawa (AKJ) pour le vol vers Osaka via Haneda.", flag:"Départ hôtel ~11h pour le vol de 13h40",
-       weather:{desc:"Nuageux puis ensoleillé", temp:"21°C / 16°C", emoji:"⛅︎", tempHigh:"21°", precip:"30%"}}
+       weather:{desc:"Nuageux le matin, éclaircies l'après-midi", temp:"22°C / 15°C", emoji:"⛅︎", tempHigh:"22°", precip:"40%", parts:{matin:{temp:17,precip:40,icon:"⛅︎"}, debutAprem:{temp:21,precip:30,icon:"⛅︎"}, finAprem:{temp:22,precip:40,icon:"⛅︎"}, soir:{temp:17,precip:0,icon:"☀︎"}}}}
     ],
     hotelArea:"Centre-ville, 1-jodori",
     names:[
@@ -52,51 +52,67 @@ const STAGES = [
     ],
   },
   {
-    id:"osaka", kanji:"大阪", name:"Osaka",
-    range:"Mer 9 → Jeu 10 sept · 1 nuit",
-    transport:"Vol depuis Asahikawa via Haneda (JAL)",
-    vibe:"Comble la nuit entre Hokkaido et Kyoto — Osaka de nuit, puis une vraie demi-journée le lendemain.",
+    id:"kyoto", kanji:"京都", name:"Kyoto",
+    range:"Mer 9 → Ven 11 sept · 2 nuits",
+    transport:"Vol depuis Asahikawa via Haneda (JAL), puis train direct vers Kyoto",
+    vibe:"Higashiyama en profondeur cette fois, avant Rosh Hashana à Kobe. Osaka n'est plus qu'un aéroport de passage.",
     days:[
-      {d:"MER 9 SEPT", dates:["2026-09-09"], body:"Arrivée Osaka Itami 17h35, Namba vers 19h. Soirée : <b>Namba</b> → Dotonbori → Hozenji Yokocho → Shinsaibashi.", flag:null,
-       weather:{desc:"Nuageux, averse possible", temp:"29°C / 25°C", emoji:"🌧︎", tempHigh:"29°", precip:"90%"}},
-      {d:"JEU 10 SEPT", dates:["2026-09-10"], body:"Quasi journée complète. Matin : Kuromon / Namba, éventuellement Osaka Castle. Après-midi : Shinsaibashi / Amerikamura, shopping. Pas de détour par Kobe. Train vers Kyoto en fin de journée (~30-60 min), arrivée visée 18h-19h.", flag:null,
-       weather:{desc:"Nuageux, pluie par moments", temp:"27°C / 23°C", emoji:"🌧︎", tempHigh:"27°", precip:"70%"}}
+      {d:"MER 9 SEPT", dates:["2026-09-09"], body:"Vol Asahikawa → Osaka (Itami, 17h35) via Haneda. Train direct vers Kyoto, installation à <b>eph Kyoto</b> (2 nuits).", flag:"Pluie soutenue prévue à l'arrivée — prévoir un imperméable/parapluie pour le trajet gare→hôtel",
+       weather:{desc:"Pluie, parfois forte", temp:"29°C / 24°C", emoji:"🌧︎", tempHigh:"29°", precip:"90%", parts:{matin:{temp:25,precip:100,icon:"🌧︎"}, debutAprem:{temp:28,precip:100,icon:"🌧︎"}, finAprem:{temp:29,precip:90,icon:"🌧︎"}, soir:{temp:25,precip:80,icon:"🌧︎"}}}},
+      {d:"JEU 10 SEPT", dates:["2026-09-10"], body:"07h15 — Départ vers <b>Fushimi Inari Taisha</b> (tôt pour la lumière et le calme). 09h40-10h30 — <b>Kiyomizu-dera</b>. 10h30-11h00 — Sannenzaka → Ninenzaka. 11h00-11h20 — <b>Ishibe-koji Alley</b> (ruelle préservée, sur le chemin). 11h20-12h00 — <b>Kodai-ji</b> / Nene-no-Michi. 12h00-12h30 — Yasaka Shrine. 12h30-14h00 — <b>Gion</b>, déjeuner ou atelier senchadō/thé-wagashi (option végétale, kasher-friendly). 14h00-14h30 — Kamo River / Pontocho de jour. Après-midi libre / repos. Soir : dîner (kasher à confirmer), Pontocho by night, puis bar de jazz live <b>Baja Bluet</b> (Hanamikoji Street, Gion, 18h-24h).", flag:"Pluie probable dès le matin — Fushimi Inari sous la pluie n'est pas rare, prévoir de quoi se couvrir",
+       weather:{desc:"Pluvieux, quelques éclaircies possibles", temp:"28°C / 23°C", emoji:"🌧︎", tempHigh:"28°", precip:"70%", parts:{matin:{temp:24,precip:70,icon:"🌧︎"}, debutAprem:{temp:27,precip:65,icon:"🌧︎"}, finAprem:{temp:28,precip:60,icon:"🌧︎"}, soir:{temp:24,precip:50,icon:"🌧︎"}}}},
+      {d:"VEN 11 SEPT", dates:["2026-09-11"], body:"08h30 — Check-out eph Kyoto, bagages en consigne à la réception. 09h00 — JR Sagano Line vers Saga-Arashiyama (~20 min direct). 09h20-10h00 — <b>Saga-Toriimoto</b> (rue ancienne). 10h00-10h40 — <b>Otagi Nenbutsu-ji</b> (à pied depuis Toriimoto). Retour vers la gare, JR retour vers Kyoto Station (~11h20-11h40). Récupération des bagages, déjeuner rapide/konbini. 13h00 — JR Special Rapid vers Kobe (~50 min).", flag:"Nishiki Market volontairement retiré — pas sur le chemin d'Arashiyama, timing trop serré. Pluie possible le matin sur Arashiyama.",
+       weather:{desc:"Pluie le matin, amélioration ensuite", temp:"29°C / 22°C", emoji:"⛅︎", tempHigh:"29°", precip:"60%", conf:"E", parts:{matin:{temp:23,precip:60,icon:"🌧︎"}, debutAprem:{temp:27,precip:40,icon:"⛅︎"}, finAprem:{temp:29,precip:30,icon:"⛅︎"}, soir:{temp:24,precip:35,icon:"⛅︎"}}}}
     ],
-    hotelArea:"Namba",
+    hotelArea:"Minami-ku, près de Kyoto Station",
     names:[
-      ["Dotonbori","道頓堀","Canal animé, néons et restaurants"],
-      ["Hozenji Yokocho","法善寺横丁","Ruelle pavée, petits izakaya"],
-      ["Shinsaibashi / Amerikamura","心斎橋・アメリカ村","Shopping et mode, ambiance streetwear"],
-      ["Kuromon Market","黒門市場","Marché couvert, produits frais et street food"],
+      ["Fushimi Inari Taisha","伏見稲荷大社","Milliers de torii, tôt le matin pour la lumière et le calme"],
+      ["Kiyomizu-dera","清水寺","Temple sur pilotis, vue sur la ville"],
+      ["Sannenzaka / Ninenzaka","産寧坂・二寧坂","Ruelles pentues, maisons traditionnelles"],
+      ["Ishibe-koji Alley","石塀小路","Ruelle pavée préservée, entre Kiyomizu et Gion"],
+      ["Kodai-ji","高台寺","Temple zen, jardins et Nene-no-Michi"],
+      ["Yasaka Shrine","八坂神社","Sanctuaire à l'entrée de Gion"],
+      ["Gion","祇園","Quartier historique des geishas"],
+      ["Baja Bluet","バハブルー","Bar de jazz live, Hanamikoji Street, Gion"],
+      ["Saga-Toriimoto","嵯峨鳥居本","Rue ancienne près d'Arashiyama"],
+      ["Otagi Nenbutsu-ji","愛宕念仏寺","Temple aux 1200 statues de pierre uniques"],
     ],
   },
   {
-    id:"kyoto", kanji:"京都", name:"Kyoto",
-    range:"Jeu 10 → Lun 14 sept · 4 nuits",
-    transport:"Train depuis Osaka (~30-60 min)",
-    vibe:"Japon historique. Un seul hôtel pour 4 nuits.",
+    id:"kobe", kanji:"神戸", name:"Kobe",
+    range:"Ven 11 → Dim 13 sept · 2 nuits",
+    transport:"Train JR Special Rapid depuis Kyoto (~50 min)",
+    vibe:"Rosh Hashana avec la communauté de Kobe — minyan garanti, accueil chaleureux du rabbin.",
     days:[
-      {d:"JEU 10 SEPT", dates:["2026-09-10"], body:"Arrivée en soirée depuis Osaka, installation à l'hôtel (4 nuits).", flag:null,
-       weather:{desc:"Nuageux, pluie par moments", temp:"27°C / 23°C", emoji:"🌧︎", tempHigh:"27°", precip:"70%"}},
-      {d:"VEN 11 SEPT", dates:["2026-09-11"], body:"Matinée libre jusqu'à ~16h30 : <b>Higashiyama</b> — Kiyomizu-dera → Sannenzaka → Ninenzaka → Kodai-ji/ruelles Higashiyama → Yasaka Shrine → Gion. Retour hôtel en fin d'après-midi.", flag:null,
-       weather:{desc:"Nuageux, tournant à la pluie", temp:"31°C / 23°C", emoji:"⛅︎", tempHigh:"31°", precip:"50%", conf:"E"}},
-      {d:"SAM 12 SEPT", dates:["2026-09-12"], body:"<b>Kurama</b> (forêt de cèdres) → <b>Kibune</b> (village rivière, kawadoko si en saison).", flag:"Réserver le resto kawadoko à l'avance si possible",
-       weather:{desc:"Ensoleillé, quelques nuages", temp:"32°C / 24°C", emoji:"☀︎", tempHigh:"32°", precip:"40%", conf:"E"}},
-      {d:"DIM 13 SEPT", dates:["2026-09-13"], body:"Journée calme, quartier d'Okazaki / Philosopher's Path à pied.", flag:null,
-       weather:{desc:"Ensoleillé, tournant à la pluie", temp:"31°C / 24°C", emoji:"☀︎", tempHigh:"31°", precip:"60%", conf:"E"}},
-      {d:"LUN 14 SEPT", dates:["2026-09-14"], body:"Matin ouest de Kyoto : <b>Nishiki Market</b> (rapide, en chemin) → <b>Otagi Nenbutsu-ji</b> → <b>Saga-Toriimoto</b> (un des deux si le temps presse). Départ hôtel à 14h max, train vers Shirahama (~3h).", flag:"Départ à 14h max — journée la plus chargée",
-       weather:{desc:"Ensoleillé, averse possible (estimation zone Osaka)", temp:"32°C / 25°C", emoji:"☀︎", tempHigh:"32°", precip:"50%", conf:"E"}}
+      {d:"VEN 11 SEPT", dates:["2026-09-11"], body:"Arrivée à Kobe en fin d'après-midi, installation au <b>Four Points Flex by Sheraton Kobe Sannomiya</b>. Coucher du soleil : entrée de Rosh Hashana — office et repas de fête avec la communauté.", flag:null,
+       weather:{desc:"Nuageux", temp:"30°C / 23°C", emoji:"⛅︎", tempHigh:"30°", precip:"40%", parts:{matin:{temp:24,precip:40,icon:"⛅︎"}, debutAprem:{temp:29,precip:25,icon:"⛅︎"}, finAprem:{temp:30,precip:20,icon:"☀︎"}, soir:{temp:25,precip:20,icon:"☀︎"}}}},
+      {d:"SAM 12 SEPT", dates:["2026-09-12"], body:"<b>Rosh Hashana</b>, premier jour. Offices et repas avec la communauté de Kobe.", flag:null,
+       weather:{desc:"Éclaircies, quelques passages nuageux", temp:"31°C / 24°C", emoji:"⛅︎", tempHigh:"31°", precip:"40%", parts:{matin:{temp:25,precip:15,icon:"☀︎"}, debutAprem:{temp:30,precip:35,icon:"⛅︎"}, finAprem:{temp:31,precip:40,icon:"⛅︎"}, soir:{temp:26,precip:30,icon:"⛅︎"}}}},
+      {d:"DIM 13 SEPT", dates:["2026-09-13"], body:"<b>Rosh Hashana</b>, second jour, jusqu'au coucher du soleil. En soirée : train retour vers Kyoto (<b>eph Kyoto</b>, second séjour).", flag:null,
+       weather:{desc:"Ensoleillé", temp:"33°C / 25°C", emoji:"☀︎", tempHigh:"33°", precip:"10%", parts:{matin:{temp:26,precip:10,icon:"☀︎"}, debutAprem:{temp:32,precip:15,icon:"☀︎"}, finAprem:{temp:33,precip:15,icon:"☀︎"}, soir:{temp:27,precip:10,icon:"☀︎"}}}}
     ],
-    hotelArea:"Okazaki",
+    hotelArea:"Sannomiya, Chuo-ku",
     names:[
-      ["Kiyomizu-dera","清水寺","Temple sur pilotis, vue sur la ville"],
-      ["Sannenzaka / Ninenzaka","産寧坂・二寧坂","Ruelles pentues, maisons traditionnelles"],
-      ["Yasaka Shrine","八坂神社","Sanctuaire à l'entrée de Gion"],
-      ["Gion","祇園","Quartier historique des geishas"],
-      ["Kurama-dera","鞍馬寺","Temple en forêt de cèdres, montagne"],
-      ["Kibune-jinja","貴船神社","Sanctuaire au bord de la rivière"],
-      ["Otagi Nenbutsu-ji","愛宕念仏寺","Temple aux 1200 statues de pierre uniques"],
-      ["Nishiki Market","錦市場","Marché couvert, spécialités de Kyoto"],
+      ["Kobe Sannomiya","神戸三宮","Quartier central de Kobe, gares et commerces"],
+    ],
+  },
+  {
+    id:"kyoto2", kanji:"京都", name:"Kyoto (retour)",
+    range:"Dim 13 → Lun 14 sept · 1 nuit",
+    transport:"Train retour depuis Kobe (~50 min), en soirée",
+    vibe:"Dernière nuit à Kyoto avant Shirahama — le secteur nord-ouest (Kinkaku-ji, Ryoan-ji) en chemin vers la gare, sans détour.",
+    days:[
+      {d:"DIM 13 SOIR", dates:["2026-09-13"], body:"Retour en train depuis Kobe en soirée, installation à <b>eph Kyoto</b> (second séjour).", flag:null,
+       weather:{desc:"Ensoleillé, doux en soirée", temp:"32°C / 25°C", emoji:"☀︎", tempHigh:"32°", precip:"25%", parts:{matin:{temp:26,precip:30,icon:"⛅︎"}, debutAprem:{temp:31,precip:25,icon:"⛅︎"}, finAprem:{temp:32,precip:20,icon:"☀︎"}, soir:{temp:27,precip:20,icon:"☀︎"}}}},
+      {d:"LUN 14 SEPT", dates:["2026-09-14"], body:"08h30 — Réveil, petit-déjeuner tranquille. 09h00 — Départ de l'hôtel (bagages laissés en chambre, check-out pas encore fait). 09h40-10h20 — <b>Kinkaku-ji</b>. 10h35-11h05 — <b>Ryoan-ji</b>, jardin de pierres zen. 11h30-12h30 — <b>Nijo Castle</b> (château et jardins). Retour hôtel, check-out et récupération des bagages (12h50-13h10). Marche/métro vers la gare de Kyoto. 13h30-14h00 — Embarquement train <b>Kuroshio</b> vers Shirahama — acheter un eki-ben à la gare (grand choix, options identifiables faciles pour le kasher-friendly) à manger dans le train.", flag:"Train Kuroshio à réserver avant le voyage. Matinée plutôt dégagée — le risque de pluie monte l'après-midi, une fois dans le train.",
+       weather:{desc:"Éclaircies le matin, risque de pluie l'après-midi", temp:"33°C / 24°C", emoji:"⛅︎", tempHigh:"33°", precip:"60%", parts:{matin:{temp:25,precip:20,icon:"☀︎"}, debutAprem:{temp:32,precip:50,icon:"🌧︎"}, finAprem:{temp:33,precip:60,icon:"🌧︎"}, soir:{temp:26,precip:40,icon:"⛅︎"}}}}
+    ],
+    hotelArea:"Minami-ku, près de Kyoto Station",
+    names:[
+      ["Kinkaku-ji","金閣寺","Pavillon d'or, temple emblématique"],
+      ["Ryoan-ji","龍安寺","Jardin de pierres zen, référence du genre"],
+      ["Nijo Castle","二条城","Château et jardins, ancienne résidence shogunale"],
+      ["Kyoto Station","京都駅","Gare centrale, quartier de l'hôtel eph"],
     ],
   },
   {
@@ -106,9 +122,9 @@ const STAGES = [
     vibe:"Rupture volontaire de rythme — plage Pacifique, aucune checklist.",
     days:[
       {d:"LUN 14 SOIR", dates:["2026-09-14"], body:"Plage, baignade, sunset, dîner. Éventuellement <b>Saki-no-Yu</b>, onsen face à l'océan.", flag:null,
-       weather:{type:"unavailable"}},
-      {d:"MAR 15 SEPT", dates:["2026-09-15"], body:"Journée complète à Shirahama : plage, Sandanbeki, Toretore Ichiba. Vol du soir (18h25) vers Tokyo — choisi pour garder la journée pleine.", flag:null,
-       weather:{type:"unavailable"}}
+       weather:{desc:"Ensoleillé toute la soirée", temp:"33°C / 25°C", emoji:"☀︎", tempHigh:"33°", precip:"10%", parts:{matin:{temp:26,precip:10,icon:"☀︎"}, debutAprem:{temp:32,precip:10,icon:"☀︎"}, finAprem:{temp:33,precip:10,icon:"☀︎"}, soir:{temp:27,precip:10,icon:"☀︎"}}}},
+      {d:"MAR 15 SEPT", dates:["2026-09-15"], body:"Journée complète à Shirahama : plage, Sandanbeki, Toretore Ichiba. Vol du soir (18h25) vers Tokyo — choisi pour garder la journée pleine.", flag:"Matinée ensoleillée pour la plage — pluie plus probable l'après-midi, avant le vol du soir",
+       weather:{desc:"Ensoleillé le matin, pluie l'après-midi", temp:"30°C / 25°C", emoji:"🌧︎", tempHigh:"30°", precip:"60%", parts:{matin:{temp:26,precip:25,icon:"⛅︎"}, debutAprem:{temp:29,precip:55,icon:"🌧︎"}, finAprem:{temp:30,precip:60,icon:"🌧︎"}, soir:{temp:26,precip:55,icon:"🌧︎"}}}}
     ],
     hotelArea:"Bord de mer",
     names:[
@@ -124,10 +140,16 @@ const STAGES = [
     transport:"Vol depuis Shirahama (JAL)",
     vibe:"Shopping, vintage, Fuji flexible, mix ancien/moderne.",
     days:[
-      {d:"MAR 15 SEPT", dates:["2026-09-15"], body:"Arrivée Haneda 19h40. <b>Nakano Broadway</b> (Pokémon, montres vintage) et Fujiya Camera si l'heure le permet.", flag:null, weather:{type:"unavailable"}},
-      {d:"MER 16 / JEU 17", dates:["2026-09-16","2026-09-17"], body:"Deux jours interchangeables, décidés à J-1/J-2 selon météo.<br>🗻 <b>Mont Fuji</b> — Kawaguchiko, Oishi Park.<br>🗼 <b>Tokyo contemporain</b> — Shibuya → Harajuku → Omotesando/Aoyama → Koenji.", flag:null, weather:{type:"unavailable"}},
-      {d:"VEN 18 SEPT", dates:["2026-09-18"], body:"<b>Asakusa</b> / Senso-ji puis <b>Ueno / Ameyoko</b>. Fin des achats (montre, caméra, Pokémon).", flag:null, weather:{type:"unavailable"}},
-      {d:"SAM 19 SEPT", dates:["2026-09-19"], body:"Fin de séjour, quartier de l'hôtel. Soir : vol Narita → Séoul.", flag:"Vol au départ de Narita, pas Haneda — prévoir 1h-1h30 de trajet", weather:{type:"unavailable"}}
+      {d:"MAR 15 SEPT", dates:["2026-09-15"], body:"Arrivée Haneda 19h40. <b>Nakano Broadway</b> (Pokémon, montres vintage) et Fujiya Camera si l'heure le permet.", flag:null,
+       weather:{desc:"Belles éclaircies", temp:"30°C / 24°C", emoji:"⛅︎", tempHigh:"30°", precip:"20%", parts:{matin:{temp:25,precip:15,icon:"☀︎"}, debutAprem:{temp:29,precip:20,icon:"☀︎"}, finAprem:{temp:30,precip:20,icon:"☀︎"}, soir:{temp:25,precip:15,icon:"☀︎"}}}},
+      {d:"MER 16 SEPT", dates:["2026-09-16"], body:"Jour flexible, décidé selon météo.<br>🗻 <b>Mont Fuji</b> — Kawaguchiko, Oishi Park.<br>🗼 <b>Tokyo contemporain</b> — Shibuya → Harajuku → Omotesando/Aoyama → Koenji.", flag:"Ciel qui se couvre en cours de journée — vue sur le Fuji plus incertaine l'après-midi",
+       weather:{desc:"Nuageux, pluie possible en soirée", temp:"28°C / 24°C", emoji:"⛅︎", tempHigh:"28°", precip:"60%", parts:{matin:{temp:24,precip:25,icon:"⛅︎"}, debutAprem:{temp:27,precip:40,icon:"⛅︎"}, finAprem:{temp:28,precip:55,icon:"🌧︎"}, soir:{temp:25,precip:65,icon:"🌧︎"}}}},
+      {d:"JEU 17 SEPT", dates:["2026-09-17"], body:"Jour flexible, décidé selon météo — l'autre des deux options du 16.<br>🗻 <b>Mont Fuji</b> — Kawaguchiko, Oishi Park.<br>🗼 <b>Tokyo contemporain</b> — Shibuya → Harajuku → Omotesando/Aoyama → Koenji.", flag:"Grosse pluie prévue (~59mm) — Fuji peu probable ce jour-là, privilégier les activités en intérieur/shopping",
+       weather:{desc:"Pluvieux toute la journée", temp:"25°C / 21°C", emoji:"🌧︎", tempHigh:"25°", precip:"90%", conf:"E", parts:{matin:{temp:22,precip:80,icon:"🌧︎"}, debutAprem:{temp:24,precip:90,icon:"🌧︎"}, finAprem:{temp:25,precip:85,icon:"🌧︎"}, soir:{temp:22,precip:75,icon:"🌧︎"}}}},
+      {d:"VEN 18 SEPT", dates:["2026-09-18"], body:"<b>Asakusa</b> / Senso-ji puis <b>Ueno / Ameyoko</b>. Fin des achats (montre, caméra, Pokémon).", flag:null,
+       weather:{desc:"Nuageux, pluie en fin de journée", temp:"25°C / 20°C", emoji:"🌧︎", tempHigh:"25°", precip:"80%", conf:"E", parts:{matin:{temp:21,precip:40,icon:"⛅︎"}, debutAprem:{temp:24,precip:55,icon:"🌧︎"}, finAprem:{temp:25,precip:70,icon:"🌧︎"}, soir:{temp:21,precip:80,icon:"🌧︎"}}}},
+      {d:"SAM 19 SEPT", dates:["2026-09-19"], body:"Fin de séjour, quartier de l'hôtel. Soir : vol Narita → Séoul.", flag:"Vol au départ de Narita, pas Haneda — prévoir 1h-1h30 de trajet",
+       weather:{desc:"Pluie le matin, amélioration ensuite", temp:"26°C / 19°C", emoji:"🌧︎", tempHigh:"26°", precip:"80%", conf:"E", parts:{matin:{temp:20,precip:75,icon:"🌧︎"}, debutAprem:{temp:24,precip:60,icon:"🌧︎"}, finAprem:{temp:26,precip:45,icon:"⛅︎"}, soir:{temp:22,precip:35,icon:"⛅︎"}}}}
     ],
     hotelArea:"Minato-ku, Takanawa",
     names:[
@@ -146,28 +168,30 @@ function mapsUrl(addr){ return "https://www.google.com/maps/search/?api=1&query=
 function telUrl(phone){ return "tel:" + phone.replace(/[^0-9+]/g,""); }
 
 const HOTELS = [
-  { kanji:"札幌", name:"KOKO HOTEL Sapporo Ekimae", city:"Sapporo", stageId:"sapporo",
+  { id:"sapporo", kanji:"札幌", name:"KOKO HOTEL Sapporo Ekimae", city:"Sapporo", stageId:"sapporo",
     checkinDate:"2026-09-06", checkoutDate:"2026-09-07",
     dateRange:"Dim 6 → Lun 7 sept", nights:"1 nuit",
     checkin:"6 sept, à partir de 15h00", checkout:"7 sept, avant 11h00",
     room:"Double Room with Small Double Bed — Non-Smoking",
     address:"060-0001, Sapporo, Chuo-ku, Kita 1-jo, Nishi 3-chome, 3-10", addressJP:"060-0001 札幌市中央区北1条西3丁目3-10", phone:"+81 11-261-3489",
     confirmation:"5815960773", pin:"6276", price:"¥10,619", priceAmount:10619, priceCurrency:"JPY" },
-  { kanji:"旭川", name:"HOTEL AMANEK Asahikawa", city:"Asahikawa", stageId:"asahikawa",
+  { id:"asahikawa", kanji:"旭川", name:"HOTEL AMANEK Asahikawa", city:"Asahikawa", stageId:"asahikawa",
     checkinDate:"2026-09-07", checkoutDate:"2026-09-09",
     dateRange:"Lun 7 → Mer 9 sept", nights:"2 nuits",
     checkin:"7 sept (15h00-00h00)", checkout:"9 sept, avant 11h00",
     room:"Standard Twin Room",
     address:"070-0031, Asahikawa, 1 JoDori 8 Chome 218", addressJP:"070-0031 旭川市1条通8丁目218", phone:"+81 166-76-5430",
     confirmation:"6181799980", pin:"3493", price:"¥20,495", priceAmount:20495, priceCurrency:"JPY" },
-  { kanji:"大阪", name:"APA Hotel Namba Ekihigashi", city:"Osaka (Namba)", stageId:"osaka",
+  { id:"osaka-old", kanji:"大阪", name:"APA Hotel Namba Ekihigashi", city:"Osaka (Namba)", stageId:null,
+    cancelled:true, cancelledNote:"Annulé gratuitement — Osaka n'est plus une étape (juste l'aéroport de passage).",
     checkinDate:"2026-09-09", checkoutDate:"2026-09-10",
     dateRange:"Mer 9 → Jeu 10 sept", nights:"1 nuit",
     checkin:"9 sept, à partir de 15h00", checkout:"10 sept, avant 10h00",
     room:"Single Room — Non-Smoking",
     address:"542-0075, Osaka, Chuo Ward, Namba Sennichimae 4-29", addressJP:"542-0075 大阪市中央区難波千日前4-29", phone:"+81 6-6630-8411",
     confirmation:"6965465308", pin:"5122", price:"¥9,090", priceAmount:9090, priceCurrency:"JPY" },
-  { kanji:"京都", name:"Heian No Mori Kyoto", city:"Kyoto", stageId:"kyoto",
+  { id:"kyoto-old", kanji:"京都", name:"Heian No Mori Kyoto", city:"Kyoto", stageId:null,
+    cancelled:true, cancelledNote:"Annulé gratuitement, remboursement en cours — remplacé par eph Kyoto (2 séjours) autour de Rosh Hashana à Kobe.",
     checkinDate:"2026-09-10", checkoutDate:"2026-09-14",
     dateRange:"Jeu 10 → Lun 14 sept", nights:"4 nuits",
     checkin:"10 sept, à partir de 15h00", checkout:"14 sept, avant 11h00",
@@ -175,7 +199,31 @@ const HOTELS = [
     address:"Kyoto, Sakyo-ku Okazakihigashi Tenno-cho 51", addressJP:"606-8332 京都市左京区岡崎東天王町51", phone:"+81 75-761-3130",
     confirmation:"6870894039", pin:null, price:"¥44,736", priceAmount:44736, priceCurrency:"JPY",
     note:"Annulation gratuite jusqu'au 8 sept 23:59." },
-  { kanji:"白浜", name:"Guest Living Mu Nanki Shirahama", city:"Shirahama", stageId:"shirahama",
+  { id:"kyoto1", kanji:"京都", name:"eph KYOTO (1er séjour)", city:"Kyoto", stageId:"kyoto",
+    checkinDate:"2026-09-09", checkoutDate:"2026-09-11",
+    dateRange:"Mer 9 → Ven 11 sept", nights:"2 nuits",
+    checkin:"9 sept", checkout:"11 sept",
+    room:"Twin Room",
+    address:"Minami-ku Higashikujo Nishisanno-cho 5-6, Kyoto", addressJP:"", phone:"+81 75-693-8898",
+    confirmation:"6233804471", pin:null, price:"¥21,456", priceAmount:21456, priceCurrency:"JPY",
+    note:"Payé." },
+  { id:"kobe", kanji:"神戸", name:"Four Points Flex by Sheraton Kobe Sannomiya", city:"Kobe", stageId:"kobe",
+    checkinDate:"2026-09-11", checkoutDate:"2026-09-13",
+    dateRange:"Ven 11 → Dim 13 sept", nights:"2 nuits",
+    checkin:"11 sept", checkout:"13 sept",
+    room:"Single Room — Non-Smoking",
+    address:"1-9 Nunobikicho, Chuo-ku, Kobe, Hyogo", addressJP:"", phone:"+81 78-230-0381",
+    confirmation:"5318831129", pin:null, price:"¥50,908", priceAmount:50908, priceCurrency:"JPY",
+    note:"Annulation gratuite jusqu'au 8 sept 23:59, sinon ¥19,580." },
+  { id:"kyoto2", kanji:"京都", name:"eph KYOTO (2e séjour)", city:"Kyoto", stageId:"kyoto2",
+    checkinDate:"2026-09-13", checkoutDate:"2026-09-14",
+    dateRange:"Dim 13 → Lun 14 sept", nights:"1 nuit",
+    checkin:"13 sept", checkout:"14 sept",
+    room:"Twin Room",
+    address:"Minami-ku Higashikujo Nishisanno-cho 5-6, Kyoto", addressJP:"", phone:"+81 75-693-8898",
+    confirmation:"5803122737", pin:null, price:"$79.88", priceAmount:79.88, priceCurrency:"USD",
+    note:"Payé, non remboursable." },
+  { id:"shirahama", kanji:"白浜", name:"Guest Living Mu Nanki Shirahama", city:"Shirahama", stageId:"shirahama",
     checkinDate:"2026-09-14", checkoutDate:"2026-09-15",
     dateRange:"Lun 14 → Mar 15 sept", nights:"1 nuit",
     checkin:"14 sept (16h00-20h00)", checkout:"15 sept (7h00-10h00)",
@@ -183,7 +231,7 @@ const HOTELS = [
     address:"Wakayama, Shirahama, Mishimurogun Shirahama-cho 3076-1", addressJP:"649-2200 和歌山県西牟婁郡白浜町字浜通り3076-1", phone:"+81 739-34-2466",
     confirmation:"6307857280", pin:"0501", price:"≈ $66 / ¥10,505", priceAmount:10505, priceCurrency:"JPY",
     note:"Annulation gratuite jusqu'au 6 sept 23:59." },
-  { kanji:"東京", name:"APA Hotel Shinagawa Sengakuji Ekimae", city:"Tokyo", stageId:"tokyo",
+  { id:"tokyo", kanji:"東京", name:"APA Hotel Shinagawa Sengakuji Ekimae", city:"Tokyo", stageId:"tokyo",
     checkinDate:"2026-09-15", checkoutDate:"2026-09-19",
     dateRange:"Mar 15 → Sam 19 sept", nights:"4 nuits",
     checkin:"15 sept, à partir de 15h00", checkout:"19 sept, avant 10h00",
@@ -231,8 +279,8 @@ const TRAINS = [
 /* ============ BUDGET (fixed exchange constants — edit by hand if needed) ============ */
 const JPY_PER_USD = 160;
 const KRW_PER_USD = 1350;
-const BUDGET_TARGET = 3000;
-const FOOD_DAILY_TARGET = 30;         // USD — cible repas/jour, sur les jours où il y a des dépenses repas
+const BUDGET_TARGET = 3500;
+const FOOD_DAILY_TARGET = 35;         // USD — cible repas/jour, sur les jours où il y a des dépenses repas
 const TRANSPORT_DAILY_TARGET = 20;   // USD — cible transport/jour, sur les jours où il y a des dépenses transport
 const DAILY_TOTAL_ALERT = 70;        // USD — au-delà, la journée est signalée en rouge dans "Par jour"
 
@@ -323,12 +371,6 @@ const ACTIVITIES = {
     { id:"act-biei-1", title:"Biei — vélo électrique guidé", desc:"Balade guidée à vélo électrique dans la campagne de Biei", duration:"~3h", price:"¥6000-8000", reservation:true, mapsQuery:"Biei Patchwork Road" },
     { id:"act-biei-2", title:"AgriWalk (terres agricoles)", desc:"Marche commentée sur des terres agricoles habituellement fermées au public", duration:"~2h", price:"¥3000-5000", reservation:true, mapsQuery:"Biei" },
     { id:"act-biei-3", title:"Récolte de pommes de terre", desc:"Cueillette de pommes de terre dans une ferme locale", duration:"~1h30", price:"¥2000-3000", reservation:true, mapsQuery:"Biei potato digging" },
-  ],
-  osaka:[
-    { id:"act-osa-1", title:"Cours de shamisen avec une ancienne geisha", desc:"Initiation à cet instrument traditionnel, enseignée par une ancienne geisha", duration:"~1h-1h30", price:"¥5000-8000", reservation:true, mapsQuery:"" },
-    { id:"act-osa-2", title:"Calligraphie à Namba", desc:"Initiation au pinceau, tu repars avec ton kanji", duration:"~1h", price:"¥3000-4000", reservation:true, mapsQuery:"Namba" },
-    { id:"act-osa-3", title:"Okonomiyaki végétarien", desc:"Crêpe salée au chou, spécialité d'Osaka", duration:"repas", price:"¥1000-1500", reservation:false, mapsQuery:"", note:"Demander sans porc/fruits de mer, et vérifier la sauce/bonite." },
-    { id:"act-osa-4", title:"Kushikatsu végétal", desc:"Brochettes de légumes panées et frites", duration:"repas", price:"¥800-1500", reservation:false, mapsQuery:"" },
   ],
   kyoto:[
     { id:"act-kyo-1", title:"Senchadō (voie du thé)", desc:"Cérémonie du thé vert en petit groupe", duration:"~1h30", price:"¥3000-5000", reservation:true, mapsQuery:"" },
