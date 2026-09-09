@@ -455,6 +455,48 @@ function trainMiniCardHTML(t){
     </div>
   </div>`;
 }
+/* ============ EXPERIENCES — booked/paid workshops & activities ============ */
+function experienceCard(e){
+  return `<div class="wallet-card type-experience" id="wc-exp-${e.id}">
+    <div class="wc-top">
+      <div class="wc-kanji">${e.kanji}</div>
+      <div class="wc-icon">Atelier</div>
+      <div class="wc-title">${e.title}</div>
+      <div class="wc-subtitle">${formatDateLabelFR(e.date)} · ${e.time}</div>
+    </div>
+    <div class="wc-tear"></div>
+    <div class="wc-body">
+      <div class="wc-row"><div class="k">Adresse</div><div class="v"><a href="${mapsUrl(e.address)}" target="_blank">${e.address}</a></div></div>
+      <div class="wc-row"><div class="k">Confirmation</div><div class="v">${e.confirmation}</div></div>
+      ${e.authKey? `<div class="wc-row"><div class="k">Clé</div><div class="v">${e.authKey}</div></div>`:''}
+      ${e.passenger? `<div class="wc-row"><div class="k">Nom</div><div class="v">${e.passenger}</div></div>`:''}
+      ${priceRowHTML(e.id, e)}
+      ${e.note? `<div class="wc-note">${e.note}</div>`:''}
+      <div class="wc-actions">
+        <a class="wc-btn" href="${mapsUrl(e.address)}" target="_blank">📍 Maps</a>
+        <button class="wc-btn" data-copy-text="${e.confirmation}">Copier confirmation</button>
+      </div>
+    </div>
+  </div>`;
+}
+function experienceMiniCardHTML(e){
+  return `<div class="wallet-card type-experience">
+    <div class="wc-top">
+      <div class="wc-kanji">${e.kanji}</div>
+      <div class="wc-icon">Atelier aujourd'hui</div>
+      <div class="wc-title">${e.title}</div>
+      <div class="wc-subtitle">${e.time}</div>
+    </div>
+    <div class="wc-tear"></div>
+    <div class="wc-body">
+      <div class="wc-actions">
+        <a class="wc-btn" href="${mapsUrl(e.address)}" target="_blank">📍 Maps</a>
+        <button class="wc-btn" data-goto-experience="${e.id}">Voir la réservation</button>
+      </div>
+    </div>
+  </div>`;
+}
+
 function wireDeleteTransportButtons(){
   $$("[data-delete-transport]").forEach(btn=>{
     btn.onclick = () => {
@@ -505,6 +547,7 @@ function buildFilters(){
     {id:'hotel', label:'Hôtels'},
     {id:'flight', label:'Vols'},
     {id:'train', label:'Trains/bus'},
+    {id:'experience', label:'Ateliers'},
   ];
   filters.forEach(f=>{
     const btn = document.createElement('button');
@@ -529,6 +572,13 @@ function renderBookings(){
       trains.forEach(t=> html += trainCard(t));
     }
   }
+  if(currentFilter==='all' || currentFilter==='experience'){
+    if(EXPERIENCES.length===0 && currentFilter==='experience'){
+      html += `<div class="wc-empty">Pas encore d'atelier réservé.</div>`;
+    } else {
+      EXPERIENCES.forEach(e=> html += experienceCard(e));
+    }
+  }
   list.innerHTML = html;
   wireCopyButtons();
   wirePriceEditButtons();
@@ -546,7 +596,7 @@ function gotoWalletCard(type, key){
   $$('.filter-btn').forEach(b=>b.classList.toggle('active', b.dataset.filter==='all'));
   renderBookings();
   setTimeout(()=>{
-    const prefix = type==='hotel' ? 'wc-hotel-' : type==='train' ? 'wc-train-' : 'wc-flight-';
+    const prefix = type==='hotel' ? 'wc-hotel-' : type==='train' ? 'wc-train-' : type==='experience' ? 'wc-exp-' : 'wc-flight-';
     const el = document.getElementById(prefix+key);
     if(el){
       el.scrollIntoView({behavior:'smooth', block:'start'});
@@ -569,10 +619,11 @@ function itemUSD(itemId, item){
 }
 let budgetAggMode = "category";
 function renderBudget(){
-  const hotelsUSD = HOTELS.filter(h=>!h.cancelled).reduce((sum,h)=> sum + itemUSD(h.id, h), 0);
+  const hotelsUSD = HOTELS.filter(h=>!h.cancelled && h.countsTowardBudget!==false).reduce((sum,h)=> sum + itemUSD(h.id, h), 0);
   const flightsUSD = FLIGHTS.filter(f=>f.countsTowardBudget!==false).reduce((sum,f)=> sum + itemUSD(f.id, f), 0);
   const trainsUSD = getAllTrains().filter(t=>t.countsTowardBudget!==false).reduce((sum,t)=> sum + itemUSD(t.id, t), 0);
-  const committed = hotelsUSD + flightsUSD + trainsUSD;
+  const experiencesUSD = EXPERIENCES.filter(e=>e.countsTowardBudget!==false).reduce((sum,e)=> sum + itemUSD(e.id, e), 0);
+  const committed = hotelsUSD + flightsUSD + trainsUSD + experiencesUSD;
 
   const expenses = getExpenses();
   const inBudget = expenses.filter(e => !e.outOfBudget);
@@ -598,6 +649,7 @@ function renderBudget(){
     {label:`Hôtels (${activeHotelCount})`, amt:hotelsUSD},
     {label:"Vols personnels", amt:flightsUSD},
     {label:"Trains / bus", amt:trainsUSD},
+    {label:"Ateliers réservés", amt:experiencesUSD},
     {label:"Dépenses ajoutées", amt:spentDuringTrip},
   ];
   const wrap = $("#budgetBreakdown");
@@ -908,6 +960,7 @@ function renderDayCards(iso, container){
   STAGES.forEach(s => s.days.forEach(d => { if(d.dates.includes(iso)) dayEntries.push({...d, stage:s}); }));
   const todaysFlights = FLIGHTS.filter(f => f.date === iso);
   const todaysTrains = getAllTrains().filter(t => t.date === iso);
+  const todaysExperiences = EXPERIENCES.filter(e => e.date === iso);
   const weather = dayEntries.find(d => d.weather && d.weather.type !== "unavailable")?.weather || dayEntries[0]?.weather;
   const headerLabel = dayEntries[0] ? dayEntries[0].d : iso;
   const isArrivalDay = !!(hotel && hotel.checkinDate === iso);
@@ -931,6 +984,8 @@ function renderDayCards(iso, container){
     html += hotelCardHTML;
     html += transportCardsHTML || fallbackTransportHTML;
   }
+
+  html += todaysExperiences.map(e => experienceMiniCardHTML(e)).join('');
 
   if(dayEntries.length){
     html += `<div class="today-card">
@@ -980,6 +1035,9 @@ function renderDayCards(iso, container){
   });
   $$("[data-goto-train]", container).forEach(btn=>{
     btn.onclick = () => gotoWalletCard('train', btn.dataset.gotoTrain);
+  });
+  $$("[data-goto-experience]", container).forEach(btn=>{
+    btn.onclick = () => gotoWalletCard('experience', btn.dataset.gotoExperience);
   });
 }
 

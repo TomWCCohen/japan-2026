@@ -224,6 +224,7 @@
   }
   .wallet-card.type-flight .wc-top{ background:var(--indigo-deep); }
   .wallet-card.type-train .wc-top{ background:var(--green); }
+  .wallet-card.type-experience .wc-top{ background:var(--shu); }
   .wallet-card .wc-top .wc-kanji{
     position:absolute; right:-4px; top:-14px; font-family:"Hiragino Mincho ProN","Yu Mincho",serif;
     font-size:64px; color:rgba(246,245,241,0.12); line-height:1;
@@ -512,7 +513,7 @@
   <div class="kanji-bg">旅</div>
   <div class="eyebrow">VOYAGE — SÉOUL ⇄ JAPON</div>
   <h1>日本 2026</h1>
-  <div class="dates">6 → 20 septembre · Hokkaido → Kyoto → Kobe → Kyoto → Shirahama → Tokyo</div>
+  <div class="dates">6 → 20 septembre · Hokkaido → Kyoto → Kobe → Kyoto → Shirahama → Tokyo → Séoul</div>
 </header>
 
 <main id="app">
@@ -528,7 +529,7 @@
 
     <div class="sub-panel active" id="route-overview" data-route="overview">
       <div class="section-label">Vue d'ensemble</div>
-      <p class="hero-note">Sapporo → Asahikawa (Biei + Asahidake) → Kyoto → Kobe (Rosh Hashana) → Kyoto → Shirahama → Tokyo. Le tronçon Alpes initial a été remplacé par Hokkaido pour la météo ; Osaka n'est plus qu'un aéroport de passage, et Rosh Hashana s'est déplacé de Kyoto à Kobe.</p>
+      <p class="hero-note">Sapporo → Asahikawa (Biei + Asahidake) → Kyoto → Kobe (Rosh Hashana) → Kyoto → Shirahama → Tokyo → Séoul (escale pro avant le vol retour). Le tronçon Alpes initial a été remplacé par Hokkaido pour la météo ; Osaka n'est plus qu'un aéroport de passage, et Rosh Hashana s'est déplacé de Kyoto à Kobe.</p>
       <div class="route-map" id="routeMap"></div>
       <div class="section-label">Tout est réservé</div>
       <p class="hero-note" style="margin-bottom:8px;">6 hôtels, 5 vols. Détails dans l'onglet <b>予 Résa</b>. Suivi des dépenses dans <b>¥ Budget</b>.</p>
@@ -680,6 +681,7 @@
           <option value="Kobe">Kobe</option>
           <option value="Shirahama">Shirahama</option>
           <option value="Tokyo">Tokyo</option>
+          <option value="Seoul">Seoul</option>
         </select>
       </div>
       <div class="form-row">

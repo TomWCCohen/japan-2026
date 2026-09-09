@@ -59,9 +59,9 @@ const STAGES = [
     days:[
       {d:"MER 9 SEPT", dates:["2026-09-09"], body:"Vol Asahikawa → Osaka (Itami, 17h35) via Haneda. Train direct vers Kyoto, installation à <b>eph Kyoto</b> (2 nuits).", flag:"Pluie soutenue prévue à l'arrivée — prévoir un imperméable/parapluie pour le trajet gare→hôtel",
        weather:{desc:"Pluie, parfois forte", temp:"29°C / 24°C", emoji:"🌧︎", tempHigh:"29°", precip:"90%", parts:{matin:{temp:25,precip:100,icon:"🌧︎"}, debutAprem:{temp:28,precip:100,icon:"🌧︎"}, finAprem:{temp:29,precip:90,icon:"🌧︎"}, soir:{temp:25,precip:80,icon:"🌧︎"}}}},
-      {d:"JEU 10 SEPT", dates:["2026-09-10"], body:"07h15 — Départ vers <b>Fushimi Inari Taisha</b> (tôt pour la lumière et le calme). 09h40-10h30 — <b>Kiyomizu-dera</b>. 10h30-11h00 — Sannenzaka → Ninenzaka. 11h00-11h20 — <b>Ishibe-koji Alley</b> (ruelle préservée, sur le chemin). 11h20-12h00 — <b>Kodai-ji</b> / Nene-no-Michi. 12h00-12h30 — Yasaka Shrine. 12h30-14h00 — <b>Gion</b>, déjeuner ou atelier senchadō/thé-wagashi (option végétale, kasher-friendly). 14h00-14h30 — Kamo River / Pontocho de jour. Après-midi libre / repos. Soir : dîner (kasher à confirmer), Pontocho by night, puis bar de jazz live <b>Baja Bluet</b> (Hanamikoji Street, Gion, 18h-24h).", flag:"Pluie probable dès le matin — Fushimi Inari sous la pluie n'est pas rare, prévoir de quoi se couvrir",
+      {d:"JEU 10 SEPT", dates:["2026-09-10"], body:"06h15 — Réveil. 07h00 — Départ vers <b>Fushimi Inari Taisha</b>. 07h20-08h45 — Fushimi Inari, avant la foule (accessible 24/7). 09h15-12h30 — <b>Kiyomizu-dera</b> → Sannenzaka → Ninenzaka → Ishibe-koji → Kodai-ji → Yasaka. 12h30-13h30 — <b>Gion</b> + déjeuner, idéalement yudofu/yuba. 13h30-14h15 — bonus selon rythme : wagashi + matcha / Kamo River / Pontocho. 14h15 — départ vers l'atelier. 15h30-17h30 — <b>tissage Nishiki chez KOHO TATSUMURA</b> (25 Shichiku Shimonokishicho, Kita-ku) — expérience twill + visite de l'atelier, ~2h. ~18h15 — retour centre. Soir : dîner, Pontocho/Kamo River by night, puis bar de jazz live <b>Baja Bluet</b> (Hanamikoji Street, Gion) si encore de l'énergie.", flag:"Nishiki Market volontairement sacrifié pour l'atelier de tissage. Pluie probable dès le matin — prévoir de quoi se couvrir pour Fushimi Inari.",
        weather:{desc:"Pluvieux, quelques éclaircies possibles", temp:"28°C / 23°C", emoji:"🌧︎", tempHigh:"28°", precip:"70%", parts:{matin:{temp:24,precip:70,icon:"🌧︎"}, debutAprem:{temp:27,precip:65,icon:"🌧︎"}, finAprem:{temp:28,precip:60,icon:"🌧︎"}, soir:{temp:24,precip:50,icon:"🌧︎"}}}},
-      {d:"VEN 11 SEPT", dates:["2026-09-11"], body:"08h30 — Check-out eph Kyoto, bagages en consigne à la réception. 09h00 — JR Sagano Line vers Saga-Arashiyama (~20 min direct). 09h20-10h00 — <b>Saga-Toriimoto</b> (rue ancienne). 10h00-10h40 — <b>Otagi Nenbutsu-ji</b> (à pied depuis Toriimoto). Retour vers la gare, JR retour vers Kyoto Station (~11h20-11h40). Récupération des bagages, déjeuner rapide/konbini. 13h00 — JR Special Rapid vers Kobe (~50 min).", flag:"Nishiki Market volontairement retiré — pas sur le chemin d'Arashiyama, timing trop serré. Pluie possible le matin sur Arashiyama.",
+      {d:"VEN 11 SEPT", dates:["2026-09-11"], body:"06h45-07h00 — Réveil. 07h45 — Check-out, grosses valises laissées à l'hôtel. 08h00-09h00 — Trajet vers Arashiyama / Saga-Toriimoto. 09h00-11h00 — <b>Otagi Nenbutsu-ji</b> → <b>Saga-Toriimoto</b> → Adashino → descente vers Arashiyama. ~11h00-11h40 — Retour centre. 11h45-12h45 — <b>Coiffeur</b> (anglophone). 12h45-13h30 — Déjeuner rapide, récupération des bagages. ~14h00 — Kyoto Station. ~14h15-14h45 — <b>Shinkansen</b> Kyoto → Shin-Kobe. Puis hôtel à Kobe, préparation de Rosh Hashana avec une marge confortable.", flag:"Météo incertaine mais surtout nuageuse le matin plutôt que franchement pluvieuse — les extérieurs restent en premier.",
        weather:{desc:"Pluie le matin, amélioration ensuite", temp:"29°C / 22°C", emoji:"⛅︎", tempHigh:"29°", precip:"60%", conf:"E", parts:{matin:{temp:23,precip:60,icon:"🌧︎"}, debutAprem:{temp:27,precip:40,icon:"⛅︎"}, finAprem:{temp:29,precip:30,icon:"⛅︎"}, soir:{temp:24,precip:35,icon:"⛅︎"}}}}
     ],
     hotelArea:"Minami-ku, près de Kyoto Station",
@@ -76,12 +76,14 @@ const STAGES = [
       ["Baja Bluet","バハブルー","Bar de jazz live, Hanamikoji Street, Gion"],
       ["Saga-Toriimoto","嵯峨鳥居本","Rue ancienne près d'Arashiyama"],
       ["Otagi Nenbutsu-ji","愛宕念仏寺","Temple aux 1200 statues de pierre uniques"],
+      ["Adashino Nenbutsu-ji","化野念仏寺","Temple voisin, milliers de statuettes de pierre"],
+      ["KOHO TATSUMURA","光峯錦織工房","Atelier de tissage Nishiki-ori, Kita-ku"],
     ],
   },
   {
     id:"kobe", kanji:"神戸", name:"Kobe",
     range:"Ven 11 → Dim 13 sept · 2 nuits",
-    transport:"Train JR Special Rapid depuis Kyoto (~50 min)",
+    transport:"Shinkansen Kyoto → Shin-Kobe (~30 min)",
     vibe:"Rosh Hashana avec la communauté de Kobe — minyan garanti, accueil chaleureux du rabbin.",
     days:[
       {d:"VEN 11 SEPT", dates:["2026-09-11"], body:"Arrivée à Kobe en fin d'après-midi, installation au <b>Four Points Flex by Sheraton Kobe Sannomiya</b>. Coucher du soleil : entrée de Rosh Hashana — office et repas de fête avec la communauté.", flag:null,
@@ -160,6 +162,20 @@ const STAGES = [
       ["Asakusa","浅草","Vieux Tokyo, temple Senso-ji"],
       ["Ueno / Ameyoko","上野・アメ横","Parc, musées, marché populaire animé"],
     ],
+  },
+  {
+    id:"seoul", kanji:"서울", name:"Séoul",
+    range:"Sam 19 → Dim 20 sept · 1 nuit",
+    transport:"Vol depuis Tokyo (Narita, T'Way Air)",
+    vibe:"Escale professionnelle avant le vol retour vers New York — prise en charge par l'entreprise.",
+    days:[
+      {d:"SAM 19 SEPT", dates:["2026-09-19"], body:"Vol Narita → Séoul (21h45→00h25+1). Installation au <b>Grand Mercure Ambassador Hotel and Residences Seoul Yongsan</b>.", flag:null,
+       weather:{type:"unavailable"}},
+      {d:"DIM 20 SEPT", dates:["2026-09-20"], body:"Check-out, puis vol Séoul → New York (10h00-11h00) — voyage professionnel, payé par l'entreprise.", flag:null,
+       weather:{type:"unavailable"}}
+    ],
+    hotelArea:"Yongsan-gu",
+    names:[],
   }
 ];
 
@@ -239,6 +255,14 @@ const HOTELS = [
     address:"Tokyo, Minato-ku, Takanawa 2-16-30", addressJP:"108-0074 港区高輪2-16-30", phone:"+81 3-5475-6801",
     confirmation:"5015398345", pin:null, price:"¥72,270", priceAmount:72270, priceCurrency:"JPY",
     note:"Annulation gratuite jusqu'au 13 sept 23:59." },
+  { id:"seoul", kanji:"서울", name:"Grand Mercure Ambassador Hotel and Residences Seoul Yongsan", city:"Seoul", stageId:"seoul",
+    checkinDate:"2026-09-19", checkoutDate:"2026-09-20",
+    dateRange:"Sam 19 → Dim 20 sept", nights:"1 nuit",
+    checkin:"19 sept, à partir de 15h00", checkout:"20 sept, avant 11h00",
+    room:"Junior Suite, 1 King Bed",
+    address:"95, Cheongpa-ro 20-gil, Yongsan-gu, Seoul, Republic of Korea", addressJP:"", phone:"+82 2-2223-7000",
+    confirmation:"9470AII0570", pin:null, price:"Payé par Palantir", priceAmount:0, priceCurrency:"USD", countsTowardBudget:false,
+    note:"Réservé via Navan (ID LKFCDF) — voyage professionnel, payé par l'entreprise." },
 ];
 
 const FLIGHTS = [
@@ -275,6 +299,19 @@ const TRAINS = [
     price:"¥2,360", priceAmount:2360, priceCurrency:"JPY",
     note:"Billet à retirer avant le voyage via le QR code ou le code de retrait." },
 ]; // trains/bus ajoutés en cours de route → js/storage.js (getUserTransport)
+
+/* ============ EXPERIENCES — ateliers/activités réservés à l'avance (payants, confirmés) ============ */
+const EXPERIENCES = [
+  { id:"exp-1", kanji:"織", date:"2026-09-10", stageId:"kyoto",
+    title:"Tissage Nishiki — KOHO TATSUMURA",
+    time:"15h30 – 17h30",
+    address:"25 Shichiku Shimonokishicho, Kita-ku, Kyoto",
+    addressJP:"",
+    confirmation:"113LB2WA4", authKey:"tYOtg7",
+    passenger:"Tom Cohen",
+    price:"", priceAmount:0, priceCurrency:"JPY", countsTowardBudget:false,
+    note:"Expérience de tissage Nishiki-ori (綾織り) + visite de l'atelier, ~2h au total. Prix non communiqué par email — ajoute-le via le ✎ une fois connu." },
+];
 
 /* ============ BUDGET (fixed exchange constants — edit by hand if needed) ============ */
 const JPY_PER_USD = 160;
@@ -382,6 +419,7 @@ const ACTIVITIES = {
     { id:"act-shi-1", title:"Toretore Market", desc:"Marché aux poissons, produits frais de Wakayama", duration:"~1h-2h", price:"variable", reservation:false, mapsQuery:"Toretore Market Shirahama" },
     { id:"act-shi-2", title:"Saki-no-Yu (onsen face à l'océan)", desc:"Bain thermal en plein air, vue directe sur l'océan", duration:"~1h", price:"¥500-800", reservation:false, mapsQuery:"Saki-no-Yu Shirahama" },
     { id:"act-shi-3", title:"Poisson grillé + umeboshi (Wakayama)", desc:"Poisson choisi au marché puis grillé sur place, prunes salées locales", duration:"repas", price:"variable", reservation:false, mapsQuery:"", note:"Acheter un poisson identifiable au marché, le faire griller sur place." },
+    { id:"act-shi-4", title:"Asamoto Indigo Workshop & Factory (藍の里 あさもと工房)", desc:"Atelier de teinture indigo (aizome), à Hiki dans la municipalité de Shirahama", duration:"variable", price:"variable", reservation:true, mapsQuery:"あさもと工房 Hiki Shirahama" },
   ],
   tokyo:[
     { id:"act-tok-1", title:"Ozu Washi (fabriquer son papier japonais)", desc:"Fabrique ta propre feuille de papier japonais traditionnel", duration:"~45 min", price:"¥1500-2500", reservation:true, mapsQuery:"Ozu Washi Tokyo" },
